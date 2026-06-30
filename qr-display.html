@@ -28,18 +28,15 @@
         body.has-bg .display-page { position: relative; z-index: 2; }
         body.has-bg .bottom-bar { position: relative; z-index: 2; }
         .display-page { text-align: center; padding: 24px 40px 10px; }
-        h1 { font-size: 64px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
-        .subtitle { font-size: 26px; color: #ffffff; margin-bottom: 14px; }
-        .qr-box { display: inline-block; background-color: #ffffff; padding: 22px; margin: 10px 0; border: 4px solid #dc0000; }
-        .how-title { font-size: 40px; color: #ffd700; margin: 12px 0 10px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
-        .steps-row table { margin: 0 auto; border-spacing: 30px 0; }
-        .steps-row td { text-align: center; vertical-align: top; width: 180px; }
-        .step-num { display: inline-block; width: 40px; height: 40px; line-height: 40px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 22px; }
-        .step-text { font-size: 18px; color: #ffffff; margin-top: 8px; }
-        .shop-box { margin: 12px auto; padding: 12px 28px; background-color: #3a3a3a; opacity: 0.85; border: 1px solid #555555; display: inline-block; }
-        .shop-name { color: #ffd700; font-weight: bold; font-size: 24px; }
-        .shop-addr { color: #dddddd; font-size: 17px; margin-top: 3px; }
-        .approved-box { margin: 10px auto; padding: 14px 22px; background-color: #3a3a3a; opacity: 0.85; border: 1px solid #555555; text-align: left; display: inline-block; min-width: 340px; }
+        h1 { font-size: 72px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
+        .subtitle { font-size: 30px; color: #ffffff; margin-bottom: 14px; }
+        .qr-box { display: inline-block; background-color: #ffffff; padding: 24px; margin: 14px 0; border: 4px solid #dc0000; }
+        .how-title { font-size: 46px; color: #ffd700; margin: 16px 0 12px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
+        .steps-row table { margin: 0 auto; border-spacing: 40px 0; }
+        .steps-row td { text-align: center; vertical-align: top; width: 200px; }
+        .step-num { display: inline-block; width: 48px; height: 48px; line-height: 48px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 26px; }
+        .step-text { font-size: 22px; color: #ffffff; margin-top: 10px; }
+        .approved-box { margin: 14px auto; padding: 14px 22px; background-color: #3a3a3a; opacity: 0.85; border: 1px solid #555555; text-align: left; display: inline-block; min-width: 340px; }
         .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
         .appr-item { padding: 6px 0; border-bottom: 1px solid #333333; }
         .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 12px; font-weight: bold; padding: 3px 8px; margin-right: 10px; }
@@ -84,10 +81,6 @@
                 <td><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
                 <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
             </tr></table></div>
-            <div class="shop-box">
-                <div class="shop-name" id="shop-name">Test Shop</div>
-                <div class="shop-addr" id="shop-addr">Teststra&#223;e 1, 10000 Teststadt</div>
-            </div>
             <br>
             <div class="approved-box">
                 <h3>K&#252;rzlich genehmigt</h3>
@@ -106,8 +99,7 @@
     <div class="bg-overlay"></div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript">
-    var SHOPS={'151111':['Test Shop','Teststra\u00dfe 1, 10000 Teststadt'],'AK-001-LON-CE':['London Central','Oxford Street 142'],'AK-005-BER-MI':['Berlin Mitte','Friedrichstr. 112, Berlin'],'AK-006-MUC-HB':['M\u00fcnchen Hbf','Bayerstr. 25, M\u00fcnchen']};
-    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var sd=SHOPS[akid];if(sd){var n=document.getElementById('shop-name');var a=document.getElementById('shop-addr');if(n)n.innerHTML=sd[0];if(a)a.innerHTML=sd[1];}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:220,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
+    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:220,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
     function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];h+='<div class="appr-item"><span class="appr-badge">'+(r.status==='available'?'LIVE':'Genehmigt')+'</span><span class="appr-name">'+(r.marketName||r.customMarket||'')+'</span></div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
     if(window.addEventListener){window.addEventListener('load',run,false);}else if(window.attachEvent){window.attachEvent('onload',run);}else{window.onload=run;}
     </script>
