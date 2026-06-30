@@ -16,349 +16,63 @@
             overflow: hidden;
             position: relative;
         }
-
-        /* Background - hidden by default, shown by JS */
-        .bg-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-        .bg-image img {
-            width: 100%;
-            height: 100%;
-        }
-        .bg-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
-            opacity: 0.6;
-            display: none;
-        }
-
-        /* When body has bg class, show background layers */
-        body.has-bg .bg-image {
-            display: block;
-        }
-        body.has-bg .bg-overlay {
-            display: block;
-        }
-        body.has-bg .display-page {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Main content - always visible */
-        .display-page {
-            text-align: center;
-            padding: 30px 40px;
-        }
-
-        h1 {
-            font-size: 48px;
-            font-weight: bold;
-            color: #dc0000;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 4px;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: #ffffff;
-            margin-bottom: 16px;
-        }
-
-        .qr-box {
-            display: inline-block;
-            background-color: #ffffff;
-            padding: 20px;
-            margin: 12px 0;
-            border: 4px solid #dc0000;
-        }
-
-        .how-title {
-            font-size: 32px;
-            color: #ffd700;
-            margin: 14px 0 10px;
-            font-weight: bold;
-        }
-
-        .steps-row table {
-            margin: 0 auto;
-            border-spacing: 20px 0;
-        }
-
-        .steps-row td {
-            text-align: center;
-            vertical-align: top;
-            width: 160px;
-        }
-
-        .step-num {
-            display: inline-block;
-            width: 34px;
-            height: 34px;
-            line-height: 34px;
-            background-color: #dc0000;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .step-text {
-            font-size: 15px;
-            color: #ffffff;
-            margin-top: 6px;
-        }
-
-        .shop-box {
-            margin: 14px auto;
-            padding: 10px 24px;
-            background-color: #000000;
-            border: 1px solid #444444;
-            display: inline-block;
-        }
-
-        .shop-name {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .shop-addr {
-            color: #dddddd;
-            font-size: 15px;
-            margin-top: 2px;
-        }
-
-        .approved-box {
-            margin: 12px auto;
-            padding: 12px 20px;
-            background-color: #000000;
-            border: 1px solid #444444;
-            text-align: left;
-            display: inline-block;
-            min-width: 300px;
-        }
-
-        .approved-box h3 {
-            color: #ffd700;
-            font-size: 17px;
-            margin-bottom: 8px;
-        }
-
-        .appr-item {
-            padding: 5px 0;
-            border-bottom: 1px solid #333333;
-        }
-
-        .appr-badge {
-            display: inline-block;
-            background-color: #dc0000;
-            color: #ffffff;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 2px 6px;
-            margin-right: 8px;
-        }
-
-        .appr-name {
-            color: #ffffff;
-            font-size: 15px;
-        }
-
-        .no-appr {
-            color: #999999;
-            font-size: 15px;
-        }
-
-        #error-view {
-            display: none;
-            padding: 100px 40px;
-            text-align: center;
-        }
-        #error-view h2 {
-            color: #dc0000;
-            font-size: 42px;
-            margin-bottom: 16px;
-        }
-        #error-view p {
-            color: #cccccc;
-            font-size: 20px;
-        }
+        .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+        .bg-image img { width: 100%; height: 100%; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.6; display: none; }
+        body.has-bg .bg-image { display: block; }
+        body.has-bg .bg-overlay { display: block; }
+        body.has-bg .display-page { position: relative; z-index: 2; }
+        .display-page { text-align: center; padding: 30px 40px; }
+        h1 { font-size: 48px; font-weight: bold; color: #dc0000; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+        .subtitle { font-size: 20px; color: #ffffff; margin-bottom: 16px; }
+        .qr-box { display: inline-block; background-color: #ffffff; padding: 20px; margin: 12px 0; border: 4px solid #dc0000; }
+        .how-title { font-size: 32px; color: #ffd700; margin: 14px 0 10px; font-weight: bold; }
+        .steps-row table { margin: 0 auto; border-spacing: 20px 0; }
+        .steps-row td { text-align: center; vertical-align: top; width: 160px; }
+        .step-num { display: inline-block; width: 34px; height: 34px; line-height: 34px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 18px; }
+        .step-text { font-size: 15px; color: #ffffff; margin-top: 6px; }
+        .shop-box { margin: 14px auto; padding: 10px 24px; background-color: #000000; border: 1px solid #444444; display: inline-block; }
+        .shop-name { color: #ffd700; font-weight: bold; font-size: 20px; }
+        .shop-addr { color: #dddddd; font-size: 15px; margin-top: 2px; }
+        .approved-box { margin: 12px auto; padding: 12px 20px; background-color: #000000; border: 1px solid #444444; text-align: left; display: inline-block; min-width: 300px; }
+        .approved-box h3 { color: #ffd700; font-size: 17px; margin-bottom: 8px; }
+        .appr-item { padding: 5px 0; border-bottom: 1px solid #333333; }
+        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 11px; font-weight: bold; padding: 2px 6px; margin-right: 8px; }
+        .appr-name { color: #ffffff; font-size: 15px; }
+        .no-appr { color: #999999; font-size: 15px; }
     </style>
 </head>
 <body>
-
-    <!-- Content first - always renders -->
     <div class="display-page">
-
-        <div id="error-view">
-            <h2>Fehler</h2>
-            <p id="error-msg"></p>
-        </div>
-
         <div id="main-view">
             <h1>Markt anfragen</h1>
             <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
-
-            <div class="qr-box">
-                <canvas id="qr-code" width="200" height="200"></canvas>
-            </div>
-
+            <div class="qr-box"><canvas id="qr-code" width="200" height="200"></canvas></div>
             <div class="how-title">So funktioniert es</div>
-            <div class="steps-row">
-                <table><tr>
-                    <td><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
-                    <td><span class="step-num">2</span><div class="step-text">Markt ausw&auml;hlen</div></td>
-                    <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
-                </tr></table>
-            </div>
-
+            <div class="steps-row"><table><tr>
+                <td><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
+                <td><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
+                <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
+            </tr></table></div>
             <div class="shop-box">
-                <div class="shop-name" id="shop-name">Lade...</div>
-                <div class="shop-addr" id="shop-addr"></div>
+                <div class="shop-name" id="shop-name">Test Shop</div>
+                <div class="shop-addr" id="shop-addr">Teststra&#223;e 1, 10000 Teststadt</div>
             </div>
-
             <br>
-
             <div class="approved-box">
-                <h3>K&uuml;rzlich genehmigt</h3>
-                <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&auml;rkte.</span></div>
+                <h3>K&#252;rzlich genehmigt</h3>
+                <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
             </div>
         </div>
-
     </div>
-
-    <!-- Background AFTER content - only shown via JS class on body -->
     <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
     <div class="bg-overlay"></div>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-    <script type="text/javascript" src="data/akid_meta.js"></script>
     <script type="text/javascript">
-    (function() {
-        var akid = null;
-        var baseUrl = '';
-
-        function getParam(name) {
-            var s = window.location.href || '';
-            var i = s.indexOf('akid=');
-            if (i === -1) return null;
-            var val = s.substring(i + 5);
-            var end = val.indexOf('&');
-            if (end !== -1) val = val.substring(0, end);
-            return val;
-        }
-
-        function showError(msg) {
-            var el = document.getElementById('error-view');
-            var main = document.getElementById('main-view');
-            if (el) el.style.display = 'block';
-            if (main) main.style.display = 'none';
-            var msgEl = document.getElementById('error-msg');
-            if (msgEl) msgEl.innerHTML = msg;
-        }
-
-        function initPage() {
-            // Activate background
-            document.body.className = 'has-bg';
-
-            baseUrl = window.location.href;
-            var idx = baseUrl.indexOf('qr-display.html');
-            if (idx > -1) baseUrl = baseUrl.substring(0, idx);
-
-            akid = getParam('akid');
-            if (!akid) {
-                // Fallback: try to get from hash or default to 151111
-                akid = '151111';
-            }
-
-            var shop = null;
-            if (typeof getShopByAkid === 'function') {
-                shop = getShopByAkid(akid);
-            }
-            if (!shop) {
-                showError('Ung\u00fcltige Shop-ID.');
-                return;
-            }
-
-            var nameEl = document.getElementById('shop-name');
-            var addrEl = document.getElementById('shop-addr');
-            if (nameEl) nameEl.innerHTML = shop.accountName;
-            if (addrEl) addrEl.innerHTML = shop.address;
-
-            var customerUrl = baseUrl + 'customer.html?akid=' + encodeURIComponent(shop.akid);
-            try {
-                new QRious({
-                    element: document.getElementById('qr-code'),
-                    value: customerUrl,
-                    size: 200,
-                    foreground: '#1a1a1a',
-                    background: '#ffffff',
-                    level: 'M'
-                });
-            } catch(e) {}
-
-            loadApproved();
-            setInterval(loadApproved, 10000);
-        }
-
-        function loadApproved() {
-            try {
-                var xhr;
-                if (window.XMLHttpRequest) {
-                    xhr = new XMLHttpRequest();
-                } else {
-                    xhr = new ActiveXObject('Microsoft.XMLHTTP');
-                }
-                xhr.open('GET', '/api/requests?akid=' + encodeURIComponent(akid), true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        try {
-                            var data = JSON.parse(xhr.responseText);
-                            var approved = [];
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].status === 'approved' || data[i].status === 'available') {
-                                    approved.push(data[i]);
-                                }
-                            }
-                            var el = document.getElementById('approved-list');
-                            if (!el) return;
-                            if (approved.length === 0) {
-                                el.innerHTML = '<span class="no-appr">Noch keine genehmigten M\u00e4rkte.</span>';
-                                return;
-                            }
-                            var last4 = approved.slice(-4).reverse();
-                            var html = '';
-                            for (var j = 0; j < last4.length; j++) {
-                                var r = last4[j];
-                                var badge = r.status === 'available' ? 'LIVE' : 'Genehmigt';
-                                var name = r.marketName || r.customMarket || '';
-                                html += '<div class="appr-item"><span class="appr-badge">' + badge + '</span><span class="appr-name">' + name + '</span></div>';
-                            }
-                            el.innerHTML = html;
-                        } catch(e) {}
-                    }
-                };
-                xhr.send(null);
-            } catch(e) {}
-        }
-
-        if (window.addEventListener) {
-            window.addEventListener('load', initPage, false);
-        } else if (window.attachEvent) {
-            window.attachEvent('onload', initPage);
-        } else {
-            window.onload = initPage;
-        }
-    })();
+    var SHOPS={'151111':['Test Shop','Teststra\u00dfe 1, 10000 Teststadt'],'AK-001-LON-CE':['London Central','Oxford Street 142'],'AK-005-BER-MI':['Berlin Mitte','Friedrichstr. 112, Berlin'],'AK-006-MUC-HB':['M\u00fcnchen Hbf','Bayerstr. 25, M\u00fcnchen']};
+    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var sd=SHOPS[akid];if(sd){var n=document.getElementById('shop-name');var a=document.getElementById('shop-addr');if(n)n.innerHTML=sd[0];if(a)a.innerHTML=sd[1];}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:200,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
+    function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];h+='<div class="appr-item"><span class="appr-badge">'+(r.status==='available'?'LIVE':'Genehmigt')+'</span><span class="appr-name">'+(r.marketName||r.customMarket||'')+'</span></div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
+    if(window.addEventListener){window.addEventListener('load',run,false);}else if(window.attachEvent){window.attachEvent('onload',run);}else{window.onload=run;}
     </script>
 </body>
 </html>
