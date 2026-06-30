@@ -83,6 +83,10 @@ TRANSLATIONS.de = {
     cust_error_msg: 'Dieser QR-Code ist ungültig oder abgelaufen. Bitte scannen Sie einen gültigen Shop-QR-Code.',
     cust_error_no_shop: 'Keine Shop-Informationen gefunden. Bitte scannen Sie einen gültigen QR-Code.',
     cust_duplicate_warning: 'Sie haben bereits eine offene Anfrage für diesen Markt.',
+    cust_duplicate_submitted: 'Diese Wette wurde bereits angefragt und wird bearbeitet.',
+    cust_duplicate_under_review: 'Diese Wette wird bereits geprüft.',
+    cust_duplicate_available: 'Diese Wette wurde bereits genehmigt und ist verfügbar!',
+    cust_duplicate_approved: 'Diese Wette wurde bereits genehmigt!',
     cust_event_started: 'Dieses Event scheint bereits begonnen zu haben.',
     cust_success_toast: 'Anfrage erfolgreich eingereicht!',
 
@@ -300,6 +304,10 @@ TRANSLATIONS.en = {
     cust_error_msg: 'This QR code is invalid or has expired. Please scan a valid shop QR code.',
     cust_error_no_shop: 'No shop information found. Please scan a valid QR code from the shop.',
     cust_duplicate_warning: 'You already have a pending request for this market.',
+    cust_duplicate_submitted: 'This bet has already been requested and is being processed.',
+    cust_duplicate_under_review: 'This bet is already under review.',
+    cust_duplicate_available: 'This bet has already been approved and is available!',
+    cust_duplicate_approved: 'This bet has already been approved!',
     cust_event_started: 'This event appears to have already started.',
     cust_success_toast: 'Request submitted successfully!',
 
@@ -511,6 +519,10 @@ TRANSLATIONS.hr = {
     cust_error_msg: 'Ovaj QR kod je nevažeći ili istekao. Molimo skenirajte važeći QR kod poslovnice.',
     cust_error_no_shop: 'Informacije o poslovnici nisu pronađene. Molimo skenirajte važeći QR kod.',
     cust_duplicate_warning: 'Već imate otvoreni zahtjev za ovo tržište.',
+    cust_duplicate_submitted: 'Ova oklada je već zatražena i obrađuje se.',
+    cust_duplicate_under_review: 'Ova oklada se već pregledava.',
+    cust_duplicate_available: 'Ova oklada je već odobrena i dostupna!',
+    cust_duplicate_approved: 'Ova oklada je već odobrena!',
     cust_event_started: 'Čini se da je ovaj event već počeo.',
     cust_success_toast: 'Zahtjev uspješno poslan!',
 
@@ -722,6 +734,10 @@ TRANSLATIONS.tr = {
     cust_error_msg: 'Bu QR kod geçersiz veya süresi dolmuş. Lütfen geçerli bir şube QR kodu tarayın.',
     cust_error_no_shop: 'Şube bilgisi bulunamadı. Lütfen geçerli bir QR kod tarayın.',
     cust_duplicate_warning: 'Bu bahis için zaten bekleyen bir talebiniz var.',
+    cust_duplicate_submitted: 'Bu bahis zaten talep edildi ve işleniyor.',
+    cust_duplicate_under_review: 'Bu bahis zaten inceleniyor.',
+    cust_duplicate_available: 'Bu bahis zaten onaylandı ve mevcut!',
+    cust_duplicate_approved: 'Bu bahis zaten onaylandı!',
     cust_event_started: 'Bu etkinlik zaten başlamış görünüyor.',
     cust_success_toast: 'Talep başarıyla gönderildi!',
 

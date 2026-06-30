@@ -243,7 +243,7 @@ function updateSummary() {
 // --- Submit (API) ---
 async function submitRequest() {
     var submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) submitBtn.disabled = true;
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '...'; }
 
     const customMarket = document.getElementById('custom-market').value.trim();
     const eventName = document.getElementById('event-name').value.trim();
@@ -251,24 +251,8 @@ async function submitRequest() {
 
     if (!marketName) {
         showToast(I18n.t('cust_error_no_shop'), 'warning');
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
         return;
-    }
-
-    // Check duplicates via API
-    try {
-        const existing = await fetch(`${API_BASE}/requests?akid=${shopContext.akid}&customerId=${customerId}`).then(r => r.json());
-        const duplicate = existing.find(r =>
-            (r.marketName === marketName || r.customMarket === marketName) &&
-            !['declined', 'expired'].includes(r.status)
-        );
-        if (duplicate) {
-            showToast(I18n.t('cust_duplicate_warning'), 'warning');
-            if (submitBtn) submitBtn.disabled = false;
-            return;
-        }
-    } catch (e) {
-        // Continue even if check fails
     }
 
     const request = {
@@ -298,13 +282,18 @@ async function submitRequest() {
             showConfirmation();
             showToast(I18n.t('cust_success_toast'), 'success');
             updateNotificationBadge();
+        } else if (res.status === 409) {
+            var dupData = await res.json();
+            var dupMsg = I18n.t('cust_duplicate_' + (dupData.status || 'submitted'));
+            showToast(dupMsg, 'warning');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
         } else {
-            showToast('Error submitting request', 'error');
-            if (submitBtn) submitBtn.disabled = false;
+            showToast('Error', 'error');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
         }
     } catch (e) {
         showToast('Network error', 'error');
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
     }
 }
 

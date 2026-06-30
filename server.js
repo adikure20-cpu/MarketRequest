@@ -117,15 +117,24 @@ async function handleAPI(req, res, urlPath, method) {
     if (urlPath === '/api/requests' && method === 'POST') {
         const body = await parseBody(req);
 
-        // Prevent duplicate submissions (same customer, same market, within last 60 seconds)
-        const recentDupe = data.requests.find(r => 
-            r.customerId === body.customerId &&
-            (r.marketName === body.marketName || r.customMarket === body.customMarket) &&
-            r.akid === body.akid &&
-            (Date.now() - new Date(r.submittedAt).getTime()) < 60000
-        );
-        if (recentDupe) {
-            return sendJSON(res, 200, recentDupe); // Return existing request instead of creating duplicate
+        // Duplicate check - same shop + same market + same event
+        const marketCheck = body.marketName || body.customMarket || '';
+        const eventCheck = body.eventName || '';
+        if (marketCheck) {
+            const existing = data.requests.find(r =>
+                r.akid === body.akid &&
+                (r.marketName === marketCheck || r.customMarket === marketCheck) &&
+                (r.eventName || '') === eventCheck &&
+                !['declined', 'expired'].includes(r.status)
+            );
+            if (existing) {
+                return sendJSON(res, 409, {
+                    error: 'duplicate',
+                    status: existing.status,
+                    message: 'Request already exists',
+                    existingId: existing.id
+                });
+            }
         }
 
         const request = {
