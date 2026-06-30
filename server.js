@@ -153,6 +153,11 @@ async function handleAPI(req, res, urlPath, method) {
         const request = data.requests.find(r => r.id === id);
         if (!request) return sendJSON(res, 404, { error: 'Not found' });
 
+        // Skip if status is already the same
+        if (request.status === newStatus) {
+            return sendJSON(res, 200, request);
+        }
+
         const oldStatus = request.status;
         request.status = newStatus;
         request.lastUpdated = new Date().toISOString();
