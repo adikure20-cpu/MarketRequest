@@ -214,6 +214,13 @@ function submitCustomMarket() {
     }
 }
 
+// --- STEP 3: Game/ID (mandatory) ---
+function validateStep3() {
+    var value = document.getElementById('event-name').value.trim();
+    var btn = document.getElementById('step3-next-btn');
+    if (btn) btn.disabled = (value.length === 0);
+}
+
 // --- STEP 4: Summary & Submit ---
 function updateSummary() {
     const marketName = selectedMarket ? selectedMarket.name : document.getElementById('custom-market').value.trim();

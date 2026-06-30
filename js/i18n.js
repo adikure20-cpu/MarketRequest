@@ -215,6 +215,7 @@ TRANSLATIONS.de = {
     cust_game_prompt_placeholder: 'z.B. Liverpool vs Arsenal oder ID 4521',
     cust_game_prompt_confirm: 'Übernehmen',
     cust_game_prompt_skip: 'Überspringen',
+    cust_game_mandatory_hint: 'Pflichtfeld: Bitte Spielname oder Infoscreen-ID eingeben.',
 
     // Wizard steps
     cust_step_sport: 'Sportart wählen',
@@ -421,6 +422,7 @@ TRANSLATIONS.en = {
     cust_game_prompt_placeholder: 'e.g. Liverpool vs Arsenal or ID 4521',
     cust_game_prompt_confirm: 'Confirm',
     cust_game_prompt_skip: 'Skip',
+    cust_game_mandatory_hint: 'Required: Please enter game name or Infoscreen ID.',
 
     cust_step_sport: 'Choose Sport',
     cust_step_market: 'Choose Market',
@@ -626,6 +628,7 @@ TRANSLATIONS.hr = {
     cust_game_prompt_placeholder: 'npr. Liverpool vs Arsenal ili ID 4521',
     cust_game_prompt_confirm: 'Potvrdi',
     cust_game_prompt_skip: 'Preskoči',
+    cust_game_mandatory_hint: 'Obavezno: Unesite naziv utakmice ili ID s Infoscreena.',
 
     cust_step_sport: 'Odaberi sport',
     cust_step_market: 'Odaberi tržište',
@@ -831,6 +834,7 @@ TRANSLATIONS.tr = {
     cust_game_prompt_placeholder: 'örn. Liverpool vs Arsenal veya ID 4521',
     cust_game_prompt_confirm: 'Onayla',
     cust_game_prompt_skip: 'Atla',
+    cust_game_mandatory_hint: 'Zorunlu: Lütfen maç adını veya Infoscreen ID girin.',
 
     cust_step_sport: 'Spor Seç',
     cust_step_market: 'Bahis Seç',

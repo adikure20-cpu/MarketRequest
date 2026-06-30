@@ -21,28 +21,55 @@
         }
         .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
         .bg-image img { width: 100%; height: 100%; }
-        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.6; display: none; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.45; display: none; }
         body.has-bg .bg-image { display: block; }
         body.has-bg .bg-overlay { display: block; }
         body.has-bg .display-page { position: relative; z-index: 2; }
-        .display-page { text-align: center; padding: 30px 40px; }
-        h1 { font-size: 48px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; font-family: "Tipico Medium", Arial, sans-serif; }
-        .subtitle { font-size: 20px; color: #ffffff; margin-bottom: 16px; }
-        .qr-box { display: inline-block; background-color: #ffffff; padding: 20px; margin: 12px 0; border: 4px solid #dc0000; }
-        .how-title { font-size: 32px; color: #ffd700; margin: 14px 0 10px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
-        .steps-row table { margin: 0 auto; border-spacing: 20px 0; }
-        .steps-row td { text-align: center; vertical-align: top; width: 160px; }
-        .step-num { display: inline-block; width: 34px; height: 34px; line-height: 34px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 18px; }
-        .step-text { font-size: 15px; color: #ffffff; margin-top: 6px; }
-        .shop-box { margin: 14px auto; padding: 10px 24px; background-color: #000000; border: 1px solid #444444; display: inline-block; }
-        .shop-name { color: #ffd700; font-weight: bold; font-size: 20px; }
-        .shop-addr { color: #dddddd; font-size: 15px; margin-top: 2px; }
-        .approved-box { margin: 12px auto; padding: 12px 20px; background-color: #000000; border: 1px solid #444444; text-align: left; display: inline-block; min-width: 300px; }
-        .approved-box h3 { color: #ffd700; font-size: 17px; margin-bottom: 8px; }
-        .appr-item { padding: 5px 0; border-bottom: 1px solid #333333; }
-        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 11px; font-weight: bold; padding: 2px 6px; margin-right: 8px; }
-        .appr-name { color: #ffffff; font-size: 15px; }
-        .no-appr { color: #999999; font-size: 15px; }
+        body.has-bg .bottom-bar { position: relative; z-index: 2; }
+        .display-page { text-align: center; padding: 24px 40px 10px; }
+        h1 { font-size: 64px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
+        .subtitle { font-size: 26px; color: #ffffff; margin-bottom: 14px; }
+        .qr-box { display: inline-block; background-color: #ffffff; padding: 22px; margin: 10px 0; border: 4px solid #dc0000; }
+        .how-title { font-size: 40px; color: #ffd700; margin: 12px 0 10px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
+        .steps-row table { margin: 0 auto; border-spacing: 30px 0; }
+        .steps-row td { text-align: center; vertical-align: top; width: 180px; }
+        .step-num { display: inline-block; width: 40px; height: 40px; line-height: 40px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 22px; }
+        .step-text { font-size: 18px; color: #ffffff; margin-top: 8px; }
+        .shop-box { margin: 12px auto; padding: 12px 28px; background-color: #000000; border: 1px solid #444444; display: inline-block; }
+        .shop-name { color: #ffd700; font-weight: bold; font-size: 24px; }
+        .shop-addr { color: #dddddd; font-size: 17px; margin-top: 3px; }
+        .approved-box { margin: 10px auto; padding: 14px 22px; background-color: #000000; border: 1px solid #444444; text-align: left; display: inline-block; min-width: 340px; }
+        .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
+        .appr-item { padding: 6px 0; border-bottom: 1px solid #333333; }
+        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 12px; font-weight: bold; padding: 3px 8px; margin-right: 10px; }
+        .appr-name { color: #ffffff; font-size: 17px; }
+        .no-appr { color: #999999; font-size: 16px; }
+
+        /* Bottom bar with rolling legal text */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 8px 0;
+            background-color: #000000;
+            z-index: 500;
+        }
+        .legal-ticker {
+            font-size: 14px;
+            color: #999999;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ticker-wrap {
+            display: inline-block;
+            animation: ticker 35s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body>
@@ -50,7 +77,7 @@
         <div id="main-view">
             <h1>Markt anfragen</h1>
             <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
-            <div class="qr-box"><canvas id="qr-code" width="200" height="200"></canvas></div>
+            <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
             <div class="how-title">So funktioniert es</div>
             <div class="steps-row"><table><tr>
                 <td><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
@@ -68,12 +95,19 @@
             </div>
         </div>
     </div>
+
+    <div class="bottom-bar">
+        <div class="legal-ticker">
+            <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
     <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
     <div class="bg-overlay"></div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript">
     var SHOPS={'151111':['Test Shop','Teststra\u00dfe 1, 10000 Teststadt'],'AK-001-LON-CE':['London Central','Oxford Street 142'],'AK-005-BER-MI':['Berlin Mitte','Friedrichstr. 112, Berlin'],'AK-006-MUC-HB':['M\u00fcnchen Hbf','Bayerstr. 25, M\u00fcnchen']};
-    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var sd=SHOPS[akid];if(sd){var n=document.getElementById('shop-name');var a=document.getElementById('shop-addr');if(n)n.innerHTML=sd[0];if(a)a.innerHTML=sd[1];}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:200,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
+    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var sd=SHOPS[akid];if(sd){var n=document.getElementById('shop-name');var a=document.getElementById('shop-addr');if(n)n.innerHTML=sd[0];if(a)a.innerHTML=sd[1];}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:220,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
     function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];h+='<div class="appr-item"><span class="appr-badge">'+(r.status==='available'?'LIVE':'Genehmigt')+'</span><span class="appr-name">'+(r.marketName||r.customMarket||'')+'</span></div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
     if(window.addEventListener){window.addEventListener('load',run,false);}else if(window.attachEvent){window.attachEvent('onload',run);}else{window.onload=run;}
     </script>
