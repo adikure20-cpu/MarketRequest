@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const QRCode = require('qrcode');
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
@@ -322,6 +323,33 @@ const server = http.createServer(async (req, res) => {
         } catch (e) {
             console.error('API Error:', e);
             sendJSON(res, 500, { error: 'Internal server error' });
+        }
+        return;
+    }
+
+    // GET /qr?data=URL - Generate QR code as PNG image
+    if (urlPath === '/qr' && method === 'GET') {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const qrData = url.searchParams.get('data');
+        if (!qrData) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Missing data parameter');
+            return;
+        }
+        try {
+            const buffer = await QRCode.toBuffer(qrData, {
+                width: 220,
+                margin: 1,
+                color: { dark: '#1a1a1a', light: '#ffffff' }
+            });
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Cache-Control': 'public, max-age=3600'
+            });
+            res.end(buffer);
+        } catch (e) {
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('QR generation failed');
         }
         return;
     }

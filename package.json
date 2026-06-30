@@ -6,5 +6,8 @@
     "start": "node server.js",
     "show": "node server.js"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
 }
