@@ -279,10 +279,9 @@ function renderQueue(requests) {
                     <div class="request-actions" onclick="event.stopPropagation()">
                         ${req.status === 'submitted' ? `<button class="btn btn-primary btn-sm" onclick="quickAction('${req.id}', 'under_review')">${I18n.t('dash_btn_review')}</button>` : ''}
                         ${['submitted', 'under_review'].includes(req.status) ? `
-                            <button class="btn btn-success btn-sm" onclick="quickAction('${req.id}', 'approved')">${I18n.t('dash_btn_approve')}</button>
+                            <button class="btn btn-success btn-sm" onclick="quickAction('${req.id}', 'available')">${I18n.t('dash_btn_approve')}</button>
                             <button class="btn btn-danger btn-sm" onclick="openDeclineModal('${req.id}')">${I18n.t('dash_btn_decline')}</button>
                         ` : ''}
-                        ${req.status === 'approved' ? `<button class="btn btn-primary btn-sm" onclick="quickAction('${req.id}', 'available')">${I18n.t('dash_btn_make_live')}</button>` : ''}
                     </div>
                 </td>
             </tr>
@@ -297,8 +296,7 @@ async function quickAction(requestId, newStatus) {
 
     switch (newStatus) {
         case 'under_review': note = I18n.t('dash_review_note'); break;
-        case 'approved': note = I18n.t('dash_approve_note'); break;
-        case 'available': note = I18n.t('dash_live_note'); break;
+        case 'available': note = I18n.t('dash_approve_note'); break;
     }
 
     try {
@@ -414,10 +412,9 @@ async function openDetail(requestId) {
         <div class="detail-actions">
             ${request.status === 'submitted' ? `<button class="btn btn-warning" onclick="quickAction('${request.id}', 'under_review')">🔍 ${I18n.t('dash_btn_review')}</button>` : ''}
             ${['submitted', 'under_review'].includes(request.status) ? `
-                <button class="btn btn-success" onclick="quickAction('${request.id}', 'approved')">✓ ${I18n.t('dash_btn_approve')}</button>
+                <button class="btn btn-success" onclick="quickAction('${request.id}', 'available')">✓ ${I18n.t('dash_btn_approve')}</button>
                 <button class="btn btn-danger" onclick="openDeclineModal('${request.id}')">✗ ${I18n.t('dash_btn_decline')}</button>
             ` : ''}
-            ${request.status === 'approved' ? `<button class="btn btn-primary" onclick="quickAction('${request.id}', 'available')">🟢 ${I18n.t('dash_btn_make_live')}</button>` : ''}
             ${!['expired', 'available'].includes(request.status) ? `<button class="btn btn-secondary" onclick="quickAction('${request.id}', 'expired')">⏰ ${I18n.t('dash_btn_expire')}</button>` : ''}
         </div>
 
@@ -614,7 +611,7 @@ async function exportAuditLog() {
 // --- Settings ---
 async function generateSampleData() {
     const activeShops = getAllActiveShops();
-    const statuses = ['submitted', 'under_review', 'approved', 'available', 'declined'];
+    const statuses = ['submitted', 'under_review', 'available', 'declined'];
     const events = [
         'Liverpool vs Arsenal', 'Man City vs Chelsea', 'Real Madrid vs Barcelona',
         'Djokovic vs Alcaraz', 'Lakers vs Celtics', 'McGregor vs Chandler',
