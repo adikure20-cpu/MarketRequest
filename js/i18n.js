@@ -52,7 +52,7 @@ TRANSLATIONS.de = {
     qr_badge_approved: 'Genehmigt',
 
     // Customer Page
-    cust_title: 'Markt anfragen',
+    cust_title: 'Wette anfragen',
     cust_shop_label: 'Shop',
     cust_tab_request: 'Neue Anfrage',
     cust_tab_status: 'Meine Anfragen',
@@ -264,7 +264,7 @@ TRANSLATIONS.en = {
     qr_badge_live: 'LIVE',
     qr_badge_approved: 'Approved',
 
-    cust_title: 'Request a Market',
+    cust_title: 'Request a Bet',
     cust_shop_label: 'Shop',
     cust_tab_request: 'New Request',
     cust_tab_status: 'My Requests',

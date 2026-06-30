@@ -33,27 +33,18 @@
         .page-wrap {
             width: 100%;
             height: 100%;
-            display: table;
+            table-layout: fixed;
             position: relative;
             z-index: 2;
         }
-        .content-row {
-            display: table-row;
-            height: 100%;
-        }
         .content-area {
-            display: table-cell;
             vertical-align: middle;
             text-align: center;
             padding: 20px;
         }
-        .footer-row {
-            display: table-row;
-            height: 30px;
-        }
         .footer-area {
-            display: table-cell;
             vertical-align: bottom;
+            height: 30px;
         }
 
         /* Content */
@@ -101,9 +92,7 @@
     <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
     <div class="bg-overlay"></div>
 
-    <div class="page-wrap">
-        <div class="content-row">
-            <div class="content-area" align="center">
+    <table class="page-wrap" width="100%" cellpadding="0" cellspacing="0"><tr><td class="content-area" align="center" valign="middle">
                 <h1>Wette anfragen</h1>
                 <p class="subtitle">Wette nicht gefunden? Scannen &amp; anfragen!</p>
                 <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
@@ -118,18 +107,13 @@
                     <h3>K&#252;rzlich genehmigt</h3>
                     <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
                 </div>
-            </div>
-        </div>
-        <div class="footer-row">
-            <div class="footer-area">
+            </td></tr><tr><td class="footer-area" valign="bottom">
                 <div class="bottom-bar">
                     <div class="legal-ticker">
                         <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </td></tr></table>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript">
