@@ -1,0 +1,10 @@
+{
+  "name": "market-request",
+  "version": "1.0.0",
+  "description": "Shop QR Code Betting Market Request System",
+  "scripts": {
+    "start": "node server.js",
+    "show": "node server.js"
+  },
+  "private": true
+}

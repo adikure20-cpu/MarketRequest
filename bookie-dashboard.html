@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buchmacher-Dashboard – Marktanfragen</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .dash-lang-switcher {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .dash-lang-btn {
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .dash-lang-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+        .dash-lang-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>🎯 <span data-i18n="dash_title"></span></h2>
+                <p data-i18n="dash_subtitle"></p>
+                <div class="dash-lang-switcher" style="margin-top: 10px;">
+                    <button class="dash-lang-btn active" data-lang="de" onclick="changeDashLang('de')">DE</button>
+                    <button class="dash-lang-btn" data-lang="en" onclick="changeDashLang('en')">EN</button>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="queue" onclick="navigateTo('queue')">
+                    <span class="nav-icon">📥</span>
+                    <span data-i18n="dash_nav_queue"></span>
+                    <span class="nav-count" id="queue-count">0</span>
+                </li>
+                <li class="nav-item" data-section="all-requests" onclick="navigateTo('all-requests')">
+                    <span class="nav-icon">📋</span>
+                    <span data-i18n="dash_nav_all"></span>
+                </li>
+                <li class="nav-item" data-section="statistics" onclick="navigateTo('statistics')">
+                    <span class="nav-icon">📊</span>
+                    <span data-i18n="dash_nav_stats"></span>
+                </li>
+                <li class="nav-item" data-section="audit-log" onclick="navigateTo('audit-log')">
+                    <span class="nav-icon">📝</span>
+                    <span data-i18n="dash_nav_audit"></span>
+                </li>
+                <li class="nav-item" data-section="settings" onclick="navigateTo('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span data-i18n="dash_nav_settings"></span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <button class="btn btn-secondary btn-sm" id="mobile-menu-btn" onclick="toggleSidebar()" style="display: none; margin-bottom: 16px;">
+                ☰ <span data-i18n="dash_menu"></span>
+            </button>
+
+            <!-- QUEUE SECTION -->
+            <section id="section-queue">
+                <div class="main-header">
+                    <h1 data-i18n="dash_queue_title"></h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="refreshQueue()">
+                            🔄 <span data-i18n="refresh"></span>
+                        </button>
+                        <select class="form-control" id="shop-filter" style="width: auto; padding: 6px 12px; font-size: 0.85rem;" onchange="applyFilters()">
+                            <option value="" data-i18n="dash_all_shops"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid" id="stats-overview">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-pending">0</div>
+                        <div class="stat-label" data-i18n="dash_pending"></div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="stat-value" id="stat-reviewing">0</div>
+                        <div class="stat-label" data-i18n="dash_reviewing"></div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-value" id="stat-approved-today">0</div>
+                        <div class="stat-label" data-i18n="dash_approved_today"></div>
+                    </div>
+                    <div class="stat-card stat-danger">
+                        <div class="stat-value" id="stat-declined-today">0</div>
+                        <div class="stat-label" data-i18n="dash_declined_today"></div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="stat-value" id="stat-avg-time">—</div>
+                        <div class="stat-label" data-i18n="dash_avg_time"></div>
+                    </div>
+                </div>
+
+                <div class="queue-section">
+                    <div class="queue-header">
+                        <h3 data-i18n="dash_incoming"></h3>
+                        <div class="queue-filters">
+                            <button class="filter-btn active" data-filter="pending" onclick="filterQueue('pending')" data-i18n="dash_filter_new"></button>
+                            <button class="filter-btn" data-filter="under_review" onclick="filterQueue('under_review')" style="position: relative;">
+                                <span data-i18n="dash_filter_reviewing"></span>
+                                <span class="review-badge hidden" id="review-notify-count">0</span>
+                            </button>
+                            <button class="filter-btn" data-filter="all" onclick="filterQueue('all')" data-i18n="dash_filter_all"></button>
+                            <button class="filter-btn" data-filter="high-priority" onclick="filterQueue('high-priority')">⚡ <span data-i18n="dash_filter_priority"></span></button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="request-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="dash_col_priority"></th>
+                                    <th data-i18n="dash_col_market"></th>
+                                    <th data-i18n="dash_col_shop"></th>
+                                    <th data-i18n="dash_col_event_time"></th>
+                                    <th data-i18n="dash_col_submitted"></th>
+                                    <th data-i18n="dash_col_status"></th>
+                                    <th data-i18n="dash_col_actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-table-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-state hidden" id="queue-empty">
+                        <div class="empty-state-icon">🎉</div>
+                        <p data-i18n="dash_queue_empty"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ALL REQUESTS SECTION -->
+            <section id="section-all-requests" class="hidden">
+                <div class="main-header">
+                    <h1 data-i18n="dash_all_title"></h1>
+                    <div class="header-actions">
+                        <input type="text" class="form-control" id="all-requests-search"
+                               data-i18n-placeholder="dash_all_search"
+                               style="width: 250px; padding: 8px 14px; font-size: 0.85rem;"
+                               oninput="searchAllRequests(this.value)">
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="request-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="dash_col_id"></th>
+                                <th data-i18n="dash_col_market"></th>
+                                <th data-i18n="dash_col_shop"></th>
+                                <th data-i18n="dash_col_customer"></th>
+                                <th data-i18n="dash_col_submitted"></th>
+                                <th data-i18n="dash_col_status"></th>
+                                <th data-i18n="dash_col_actions"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-requests-body"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state hidden" id="all-requests-empty">
+                    <div class="empty-state-icon">📋</div>
+                    <p data-i18n="dash_all_empty"></p>
+                </div>
+            </section>
+
+            <!-- STATISTICS SECTION -->
+            <section id="section-statistics" class="hidden">
+                <div class="main-header">
+                    <h1 data-i18n="dash_stats_title"></h1>
+                </div>
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-requests">0</div>
+                        <div class="stat-label" data-i18n="dash_total_requests"></div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-value" id="approval-rate">0%</div>
+                        <div class="stat-label" data-i18n="dash_approval_rate"></div>
+                    </div>
+                    <div class="stat-card stat-danger">
+                        <div class="stat-value" id="decline-rate">0%</div>
+                        <div class="stat-label" data-i18n="dash_decline_rate"></div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="stat-value" id="avg-review-time">—</div>
+                        <div class="stat-label" data-i18n="dash_avg_review"></div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <div class="stats-chart-card">
+                        <h4 data-i18n="dash_top_markets"></h4>
+                        <div class="bar-chart" id="top-markets-chart"></div>
+                    </div>
+                    <div class="stats-chart-card">
+                        <h4 data-i18n="dash_by_sport"></h4>
+                        <div class="bar-chart" id="by-sport-chart"></div>
+                    </div>
+                    <div class="stats-chart-card full-width">
+                        <h4 data-i18n="dash_by_shop"></h4>
+                        <div class="bar-chart" id="by-shop-chart"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AUDIT LOG SECTION -->
+            <section id="section-audit-log" class="hidden">
+                <div class="main-header">
+                    <h1 data-i18n="dash_audit_title"></h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="exportAuditLog()">
+                            📥 <span data-i18n="dash_audit_export"></span>
+                        </button>
+                    </div>
+                </div>
+                <div id="audit-log-list"></div>
+                <div class="empty-state hidden" id="audit-empty">
+                    <div class="empty-state-icon">📝</div>
+                    <p data-i18n="dash_audit_empty"></p>
+                </div>
+            </section>
+
+            <!-- SETTINGS SECTION -->
+            <section id="section-settings" class="hidden">
+                <div class="main-header">
+                    <h1 data-i18n="dash_settings_title"></h1>
+                </div>
+                <div class="card" style="max-width: 600px;">
+                    <h3 class="mb-2" style="color: var(--primary);" data-i18n="dash_settings_data"></h3>
+                    <p class="text-muted mb-2" style="font-size: 0.9rem;" data-i18n="dash_settings_data_desc"></p>
+                    <div class="flex gap-2" style="flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="generateSampleData()">
+                            📦 <span data-i18n="dash_settings_generate"></span>
+                        </button>
+                        <button class="btn btn-danger" onclick="confirmClearData()">
+                            🗑️ <span data-i18n="dash_settings_clear"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card mt-3" style="max-width: 600px;">
+                    <h3 class="mb-2" style="color: var(--primary);" data-i18n="dash_settings_user"></h3>
+                    <div class="form-group">
+                        <label data-i18n="dash_settings_name"></label>
+                        <input type="text" class="form-control" id="bookie-name" value="Bookie Admin"
+                               onchange="localStorage.setItem('bookieName', this.value)">
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detail-panel">
+        <div class="detail-panel-header">
+            <h3 id="detail-title" data-i18n="dash_detail_title"></h3>
+            <button class="close-btn" onclick="closeDetailPanel()">×</button>
+        </div>
+        <div id="detail-content"></div>
+    </div>
+
+    <!-- Decline Modal -->
+    <div class="modal-backdrop hidden" id="decline-modal">
+        <div class="modal">
+            <h3 data-i18n="dash_decline_title"></h3>
+            <div class="form-group">
+                <label data-i18n="dash_decline_reason"></label>
+                <select class="form-control" id="decline-reason"></select>
+            </div>
+            <div class="form-group">
+                <label data-i18n="dash_decline_note"></label>
+                <textarea class="form-control" id="decline-note" data-i18n-placeholder="dash_decline_note_placeholder"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeclineModal()" data-i18n="cancel"></button>
+                <button class="btn btn-danger" onclick="confirmDecline()" data-i18n="dash_decline_confirm"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="data/markets.js"></script>
+    <script src="data/akid_meta.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Markt anfragen</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/customer.css">
+    <style>
+        .lang-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 0 0;
+        }
+        .lang-btn {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .lang-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+        .lang-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="customer-bg"></div>
+    <div class="customer-bg-overlay"></div>
+
+    <div class="customer-page" id="app">
+        <!-- Language Switcher -->
+        <div class="lang-switcher" id="lang-switcher">
+            <button class="lang-btn active" data-lang="de" onclick="changeLang('de')">DE</button>
+            <button class="lang-btn" data-lang="en" onclick="changeLang('en')">EN</button>
+            <button class="lang-btn" data-lang="hr" onclick="changeLang('hr')">HR</button>
+            <button class="lang-btn" data-lang="tr" onclick="changeLang('tr')">TR</button>
+        </div>
+
+        <!-- Error State (invalid QR) -->
+        <div class="error-page hidden" id="error-view">
+            <div class="error-icon">⚠️</div>
+            <h2 data-i18n="cust_error_title"></h2>
+            <p id="error-message" data-i18n="cust_error_msg"></p>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content">
+            <!-- Header -->
+            <header class="customer-header">
+                <h1>🎯 <span data-i18n="cust_title"></span></h1>
+                <p class="shop-label"><span data-i18n="cust_shop_label"></span>: <strong id="shop-name-display">—</strong></p>
+            </header>
+
+            <!-- View Tabs -->
+            <div class="view-tabs">
+                <button class="view-tab active" data-view="request" onclick="switchView('request')" data-i18n="cust_tab_request">
+                </button>
+                <button class="view-tab" data-view="status" onclick="switchView('status')" style="position: relative;" data-i18n="cust_tab_status">
+                    <span class="notif-badge hidden" id="notif-count">0</span>
+                </button>
+            </div>
+
+            <!-- REQUEST VIEW -->
+            <div id="request-view">
+                <!-- Step Indicator -->
+                <div class="step-indicator" id="step-indicator">
+                    <div class="step-dot active" data-step="1">1</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="2">2</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="3">3</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="4">4</div>
+                </div>
+
+                <!-- STEP 1: Choose Sport -->
+                <div class="wizard-step" id="step-1">
+                    <h3 data-i18n="cust_step_sport"></h3>
+                    <div class="sport-grid" id="sport-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- STEP 2: Choose Market -->
+                <div class="wizard-step hidden" id="step-2">
+                    <h3 data-i18n="cust_step_market"></h3>
+                    <button class="btn btn-secondary btn-sm mb-2" onclick="goToStep(1)">← <span data-i18n="cust_step_back"></span></button>
+                    <div class="market-grid" id="market-grid">
+                        <!-- Populated by JS based on sport -->
+                    </div>
+                    <!-- Custom Market -->
+                    <div class="custom-market-section">
+                        <div class="or-divider" data-i18n="cust_or_custom"></div>
+                        <div class="form-group" style="display: flex; gap: 8px;">
+                            <input type="text" class="form-control" id="custom-market"
+                                   data-i18n-placeholder="cust_custom_placeholder"
+                                   oninput="handleCustomInput()"
+                                   style="flex: 1;">
+                            <button class="btn btn-primary" onclick="submitCustomMarket()" style="white-space: nowrap;">→</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Game / Infoscreen ID -->
+                <div class="wizard-step hidden" id="step-3">
+                    <h3 data-i18n="cust_game_prompt_title"></h3>
+                    <button class="btn btn-secondary btn-sm mb-2" onclick="goToStep(2)">← <span data-i18n="cust_step_back"></span></button>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="cust_game_prompt_desc"></p>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="event-name"
+                               data-i18n-placeholder="cust_game_prompt_placeholder">
+                    </div>
+                    <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: 12px;" onclick="goToStep(4)" data-i18n="cust_step_next">
+                    </button>
+                </div>
+
+                <!-- STEP 4: Confirm & Submit -->
+                <div class="wizard-step hidden" id="step-4">
+                    <h3 data-i18n="cust_step_confirm"></h3>
+                    <button class="btn btn-secondary btn-sm mb-2" onclick="goToStep(3)">← <span data-i18n="cust_step_back"></span></button>
+                    <div class="card" style="margin-bottom: 20px; padding: 16px;">
+                        <div id="summary-sport" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"></div>
+                        <div id="summary-market" style="font-size: 1.1rem; font-weight: 600; margin: 4px 0;"></div>
+                        <div id="summary-game" style="font-size: 0.9rem; color: var(--text-secondary);"></div>
+                    </div>
+                    <button class="btn btn-primary btn-lg" id="submit-btn" style="width: 100%;" onclick="submitRequest()" data-i18n="cust_submit_btn">
+                    </button>
+                    <p class="text-muted text-center mt-1" style="font-size: 0.8rem;" data-i18n="cust_submit_hint">
+                    </p>
+                </div>
+            </div>
+
+            <!-- STATUS VIEW -->
+            <div id="status-view" class="status-view hidden">
+                <div id="requests-list"></div>
+                <div class="empty-state hidden" id="no-requests">
+                    <div class="empty-state-icon">📋</div>
+                    <p data-i18n="cust_no_requests"></p>
+                </div>
+            </div>
+
+            <!-- CONFIRMATION VIEW -->
+            <div id="confirmation-view" class="confirmation-view hidden">
+                <div class="check-icon">✓</div>
+                <h2 data-i18n="cust_confirmation_title"></h2>
+                <p data-i18n="cust_confirmation_msg"></p>
+                <div class="eta-message" id="eta-message" data-i18n="cust_eta_default"></div>
+                <button class="btn btn-secondary mt-3" onclick="switchView('status')" data-i18n="cust_view_requests">
+                </button>
+                <button class="btn btn-primary mt-2" onclick="resetForm()" data-i18n="cust_submit_another">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="data/markets.js"></script>
+    <script src="data/akid_meta.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/customer.js"></script>
+</body>
+</html>
