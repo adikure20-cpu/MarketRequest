@@ -5,13 +5,7 @@
 
 const PRESET_MARKETS = [
     // Fußball
-    { id: 'mkt-001', name: 'Siegwette', category: 'Fußball', description: '1X2 Ergebnis', popular: true },
-    { id: 'mkt-002', name: 'Beide Teams treffen', category: 'Fußball', description: 'Beide Teams erzielen ein Tor', popular: true },
-    { id: 'mkt-003', name: 'Über/Unter 2.5 Tore', category: 'Fußball', description: 'Gesamttore über oder unter 2.5', popular: true },
     { id: 'mkt-004', name: 'Erster Torschütze', category: 'Fußball', description: 'Spieler erzielt das erste Tor', popular: true },
-    { id: 'mkt-005', name: 'Genaues Ergebnis', category: 'Fußball', description: 'Exaktes Endergebnis vorhersagen', popular: true },
-    { id: 'mkt-006', name: 'Handicap', category: 'Fußball', description: 'Handicap-Wette', popular: true },
-    { id: 'mkt-007', name: 'Halbzeit/Endstand', category: 'Fußball', description: 'Ergebnis zur Halbzeit und am Ende', popular: true },
 
     // Tennis
     { id: 'mkt-010', name: 'Matchsieger', category: 'Tennis', description: 'Gewinner des Matches', popular: true },

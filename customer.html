@@ -86,6 +86,8 @@
                     <div class="step-dot" data-step="3">3</div>
                     <div class="step-line"></div>
                     <div class="step-dot" data-step="4">4</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="5">5</div>
                 </div>
 
                 <!-- STEP 1: Choose Sport -->
@@ -131,14 +133,29 @@
                     <p class="text-muted text-center mt-1" style="font-size: 0.75rem;" data-i18n="cust_game_mandatory_hint"></p>
                 </div>
 
-                <!-- STEP 4: Confirm & Submit -->
+                <!-- STEP 4: Player / Details -->
                 <div class="wizard-step hidden" id="step-4">
-                    <h3 data-i18n="cust_step_confirm"></h3>
+                    <h3 data-i18n="cust_player_title"></h3>
                     <button class="btn btn-secondary btn-sm mb-2" onclick="goToStep(3)">← <span data-i18n="cust_step_back"></span></button>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="cust_player_desc"></p>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="player-detail"
+                               data-i18n-placeholder="cust_player_placeholder"
+                               oninput="validateStep4()">
+                    </div>
+                    <button class="btn btn-primary btn-lg" id="step4-next-btn" style="width: 100%; margin-top: 12px;" onclick="goToStep(5)" disabled data-i18n="cust_step_next">
+                    </button>
+                </div>
+
+                <!-- STEP 5: Confirm & Submit -->
+                <div class="wizard-step hidden" id="step-5">
+                    <h3 data-i18n="cust_step_confirm"></h3>
+                    <button class="btn btn-secondary btn-sm mb-2" onclick="goToStep(4)">← <span data-i18n="cust_step_back"></span></button>
                     <div class="card" style="margin-bottom: 20px; padding: 16px;">
                         <div id="summary-sport" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"></div>
                         <div id="summary-market" style="font-size: 1.1rem; font-weight: 600; margin: 4px 0;"></div>
                         <div id="summary-game" style="font-size: 0.9rem; color: var(--text-secondary);"></div>
+                        <div id="summary-player" style="font-size: 0.9rem; color: var(--text-secondary);"></div>
                     </div>
                     <button class="btn btn-primary btn-lg" id="submit-btn" style="width: 100%;" onclick="submitRequest()" data-i18n="cust_submit_btn">
                     </button>

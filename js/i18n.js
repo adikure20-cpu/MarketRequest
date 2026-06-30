@@ -223,6 +223,10 @@ TRANSLATIONS.de = {
     cust_step_confirm: 'Anfrage bestätigen',
     cust_step_back: 'Zurück',
     cust_step_next: 'Weiter',
+
+    cust_player_title: 'Spieler / Details',
+    cust_player_desc: 'Welcher Spieler? Was genau? (z.B. Dzeko erzielt 3 Tore)',
+    cust_player_placeholder: 'z.B. Dzeko erzielt 3 Tore',
 };
 
 // --- ENGLISH ---
@@ -429,6 +433,10 @@ TRANSLATIONS.en = {
     cust_step_confirm: 'Confirm Request',
     cust_step_back: 'Back',
     cust_step_next: 'Next',
+
+    cust_player_title: 'Player / Details',
+    cust_player_desc: 'Which player? What exactly? (e.g. Dzeko scores 3 goals)',
+    cust_player_placeholder: 'e.g. Dzeko scores 3 goals',
 };
 
 // --- CROATIAN ---
@@ -635,6 +643,10 @@ TRANSLATIONS.hr = {
     cust_step_confirm: 'Potvrdi zahtjev',
     cust_step_back: 'Natrag',
     cust_step_next: 'Dalje',
+
+    cust_player_title: 'Igrač / Detalji',
+    cust_player_desc: 'Koji igrač? Što točno? (npr. Džeko postiže 3 gola)',
+    cust_player_placeholder: 'npr. Džeko postiže 3 gola',
 };
 
 // --- TURKISH ---
@@ -841,6 +853,10 @@ TRANSLATIONS.tr = {
     cust_step_confirm: 'Talebi Onayla',
     cust_step_back: 'Geri',
     cust_step_next: 'İleri',
+
+    cust_player_title: 'Oyuncu / Detaylar',
+    cust_player_desc: 'Hangi oyuncu? Ne tam olarak? (örn. Dzeko 3 gol atar)',
+    cust_player_placeholder: 'örn. Dzeko 3 gol atar',
 };
 
 // --- i18n Utility ---

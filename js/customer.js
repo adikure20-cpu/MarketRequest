@@ -140,7 +140,7 @@ function goToStep(step) {
     });
 
     applyTranslations();
-    if (step === 4) updateSummary();
+    if (step === 5) updateSummary();
 }
 
 // --- STEP 1: Sport Selection ---
@@ -221,14 +221,23 @@ function validateStep3() {
     if (btn) btn.disabled = (value.length === 0);
 }
 
-// --- STEP 4: Summary & Submit ---
+// --- STEP 4: Player / Details ---
+function validateStep4() {
+    var value = document.getElementById('player-detail').value.trim();
+    var btn = document.getElementById('step4-next-btn');
+    if (btn) btn.disabled = (value.length === 0);
+}
+
+// --- STEP 5: Summary & Submit ---
 function updateSummary() {
     const marketName = selectedMarket ? selectedMarket.name : document.getElementById('custom-market').value.trim();
     const gameName = document.getElementById('event-name').value.trim();
+    const playerDetail = document.getElementById('player-detail').value.trim();
 
     document.getElementById('summary-sport').textContent = selectedSport || '';
     document.getElementById('summary-market').textContent = marketName || '—';
     document.getElementById('summary-game').textContent = gameName ? '🎮 ' + gameName : '';
+    document.getElementById('summary-player').textContent = playerDetail ? '👤 ' + playerDetail : '';
 }
 
 // --- Submit (API) ---
@@ -268,6 +277,7 @@ async function submitRequest() {
         customMarket: customMarket || null,
         category: selectedSport || 'Custom',
         eventName: eventName || null,
+        playerDetail: document.getElementById('player-detail').value.trim() || null,
         eventTime: null,
         notes: null,
         source: 'qr_scan'
@@ -297,6 +307,7 @@ function resetForm() {
     currentStep = 1;
     document.getElementById('custom-market').value = '';
     document.getElementById('event-name').value = '';
+    document.getElementById('player-detail').value = '';
     document.querySelectorAll('.market-card').forEach(c => c.classList.remove('selected'));
 
     goToStep(1);
