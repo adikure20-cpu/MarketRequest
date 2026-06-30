@@ -17,19 +17,19 @@
             position: relative;
         }
 
+        /* Background - hidden by default, shown by JS */
         .bg-image {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            display: none;
         }
         .bg-image img {
             width: 100%;
             height: 100%;
         }
-
         .bg-overlay {
             position: absolute;
             top: 0;
@@ -38,12 +38,23 @@
             height: 100%;
             background-color: #000000;
             opacity: 0.6;
-            z-index: 1;
+            display: none;
         }
 
-        .display-page {
+        /* When body has bg class, show background layers */
+        body.has-bg .bg-image {
+            display: block;
+        }
+        body.has-bg .bg-overlay {
+            display: block;
+        }
+        body.has-bg .display-page {
             position: relative;
             z-index: 2;
+        }
+
+        /* Main content - always visible */
+        .display-page {
             text-align: center;
             padding: 30px 40px;
         }
@@ -167,39 +178,32 @@
             font-size: 15px;
         }
 
-        .error-box {
+        #error-view {
+            display: none;
             padding: 100px 40px;
             text-align: center;
         }
-
-        .error-box h2 {
+        #error-view h2 {
             color: #dc0000;
             font-size: 42px;
             margin-bottom: 16px;
         }
-
-        .error-box p {
+        #error-view p {
             color: #cccccc;
             font-size: 20px;
         }
-
-        #error-view { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="bg-image"><img src="img/bg-sports.jpg" alt="bg"></div>
-    <div class="bg-overlay"></div>
-
+    <!-- Content first - always renders -->
     <div class="display-page">
 
-        <!-- Error (hidden by default, shown by JS if needed) -->
-        <div id="error-view" class="error-box">
+        <div id="error-view">
             <h2>Fehler</h2>
-            <p id="error-msg">Kein AKID angegeben.</p>
+            <p id="error-msg"></p>
         </div>
 
-        <!-- Main content (always visible in HTML) -->
         <div id="main-view">
             <h1>Markt anfragen</h1>
             <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
@@ -232,6 +236,10 @@
 
     </div>
 
+    <!-- Background AFTER content - only shown via JS class on body -->
+    <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
+    <div class="bg-overlay"></div>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript" src="data/akid_meta.js"></script>
     <script type="text/javascript">
@@ -261,6 +269,9 @@
         }
 
         function initPage() {
+            // Activate background
+            document.body.className = 'has-bg';
+
             baseUrl = window.location.href;
             var idx = baseUrl.indexOf('qr-display.html');
             if (idx > -1) baseUrl = baseUrl.substring(0, idx);
@@ -280,13 +291,11 @@
                 return;
             }
 
-            // Update shop info
             var nameEl = document.getElementById('shop-name');
             var addrEl = document.getElementById('shop-addr');
             if (nameEl) nameEl.innerHTML = shop.accountName;
             if (addrEl) addrEl.innerHTML = shop.address;
 
-            // Generate QR
             var customerUrl = baseUrl + 'customer.html?akid=' + encodeURIComponent(shop.akid);
             try {
                 new QRious({
@@ -299,7 +308,6 @@
                 });
             } catch(e) {}
 
-            // Load approved markets
             loadApproved();
             setInterval(loadApproved, 10000);
         }
@@ -345,7 +353,6 @@
             } catch(e) {}
         }
 
-        // Init on load - multiple fallbacks
         if (window.addEventListener) {
             window.addEventListener('load', initPage, false);
         } else if (window.attachEvent) {
