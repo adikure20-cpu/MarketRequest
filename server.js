@@ -15,7 +15,11 @@ const MIME_TYPES = {
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.svg': 'image/svg+xml',
-    '.ico': 'image/x-icon'
+    '.ico': 'image/x-icon',
+    '.ttf': 'font/ttf',
+    '.otf': 'font/otf',
+    '.woff': 'font/woff',
+    '.woff2': 'font/woff2'
 };
 
 // --- Data Store ---
@@ -301,7 +305,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Static files
-    let filePath = path.join(__dirname, urlPath === '/' ? 'qr-display.html' : urlPath);
+    let filePath = path.join(__dirname, decodeURIComponent(urlPath === '/' ? 'qr-display.html' : urlPath));
     const ext = path.extname(filePath);
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
