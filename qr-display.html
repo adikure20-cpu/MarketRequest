@@ -22,7 +22,7 @@
         /* Full-page table layout to pin footer to bottom */
         .page-table { width: 100%; height: 100%; border-collapse: collapse; position: relative; }
         .page-table td { vertical-align: middle; }
-        .content-cell { text-align: center; padding: 20px 40px; }
+        .content-cell { text-align: center; padding: 20px 40px; width: 100%; }
         .footer-cell { height: 30px; vertical-align: bottom; padding: 0; }
 
         /* Background */
@@ -74,7 +74,7 @@
 </head>
 <body>
     <!-- Full-height table: content on top, footer pinned to bottom -->
-    <table class="page-table"><tr><td class="content-cell">
+    <table class="page-table" width="100%"><tr><td class="content-cell" align="center">
 
         <h1>Markt anfragen</h1>
         <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
@@ -91,7 +91,7 @@
             <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
         </div>
 
-    </td></tr><tr><td class="footer-cell">
+    </td></tr><tr><td class="footer-cell" align="center">
 
         <div class="bottom-bar">
             <div class="legal-ticker">
