@@ -189,6 +189,23 @@ async function handleAPI(req, res, urlPath, method) {
         return sendJSON(res, 200, request);
     }
 
+    // PATCH /api/requests/:id - update request fields (e.g. playerDetail)
+    if (urlPath.match(/^\/api\/requests\/[^/]+$/) && method === 'PATCH') {
+        const id = urlPath.split('/').pop();
+        const body = await parseBody(req);
+        const request = data.requests.find(r => r.id === id);
+        if (!request) return sendJSON(res, 404, { error: 'Not found' });
+
+        // Update allowed fields
+        if (body.playerDetail !== undefined) request.playerDetail = body.playerDetail;
+        if (body.eventName !== undefined) request.eventName = body.eventName;
+        if (body.marketName !== undefined) request.marketName = body.marketName;
+        request.lastUpdated = new Date().toISOString();
+
+        writeData(data);
+        return sendJSON(res, 200, request);
+    }
+
     // GET /api/audit - get audit log
     if (urlPath === '/api/audit' && method === 'GET') {
         return sendJSON(res, 200, data.auditLog);

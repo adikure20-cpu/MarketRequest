@@ -408,6 +408,12 @@ async function openDetail(requestId) {
                 <label>${I18n.t('dash_detail_customer_id')}</label>
                 <div class="value" style="font-size: 0.8rem;">${request.customerId}</div>
             </div>
+            ${request.playerDetail ? `
+                <div class="detail-info-item">
+                    <label>Spieler / Details</label>
+                    <div class="value">👤 ${escapeHtml(request.playerDetail)} <button class="btn btn-secondary btn-sm" onclick="editPlayerDetail('${request.id}')" style="margin-left: 8px;">✏️</button></div>
+                </div>
+            ` : ''}
         </div>
 
         <div class="detail-actions">
@@ -673,6 +679,28 @@ function startPolling() {
     setInterval(() => {
         if (currentSection === 'queue') refreshQueue();
     }, 3000);
+}
+
+// --- Edit Player Detail ---
+async function editPlayerDetail(requestId) {
+    var request = allRequests.find(function(r) { return r.id === requestId; });
+    if (!request) return;
+    var current = request.playerDetail || '';
+    var newVal = prompt('Spieler / Details korrigieren:', current);
+    if (newVal === null) return;
+    if (newVal.trim() === '') return;
+    try {
+        await fetch(API_BASE + '/requests/' + requestId, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playerDetail: newVal.trim() })
+        });
+        showToast('Spieler aktualisiert', 'success');
+        refreshQueue();
+        if (selectedRequestId === requestId) openDetail(requestId);
+    } catch(e) {
+        showToast('Fehler', 'error');
+    }
 }
 
 // --- Utilities ---
