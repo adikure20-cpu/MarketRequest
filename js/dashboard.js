@@ -682,22 +682,51 @@ function startPolling() {
 }
 
 // --- Edit Player Detail ---
-async function editPlayerDetail(requestId) {
+var editPlayerRequestId = null;
+
+function editPlayerDetail(requestId) {
+    editPlayerRequestId = requestId;
     var request = allRequests.find(function(r) { return r.id === requestId; });
     if (!request) return;
-    var current = request.playerDetail || '';
-    var newVal = prompt('Spieler / Details korrigieren:', current);
-    if (newVal === null) return;
-    if (newVal.trim() === '') return;
+    document.getElementById('edit-player-input').value = request.playerDetail || '';
+    document.getElementById('player-template').value = '';
+    document.getElementById('edit-player-modal').classList.remove('hidden');
+}
+
+function applyPlayerTemplate() {
+    var tmpl = document.getElementById('player-template').value;
+    if (!tmpl) return;
+    var current = document.getElementById('edit-player-input').value.trim();
+    // Try to extract player name from current value (first word(s) before "erzielt"/"erhält")
+    var name = '';
+    if (current) {
+        var parts = current.split(/\s+(erzielt|erh)/i);
+        if (parts[0]) name = parts[0].trim();
+    }
+    if (!name) name = '{Spielername}';
+    var result = tmpl.replace('{name}', name);
+    document.getElementById('edit-player-input').value = result;
+}
+
+function closeEditPlayerModal() {
+    editPlayerRequestId = null;
+    document.getElementById('edit-player-modal').classList.add('hidden');
+}
+
+async function savePlayerDetail() {
+    if (!editPlayerRequestId) return;
+    var newVal = document.getElementById('edit-player-input').value.trim();
+    if (!newVal) return;
     try {
-        await fetch(API_BASE + '/requests/' + requestId, {
+        await fetch(API_BASE + '/requests/' + editPlayerRequestId, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playerDetail: newVal.trim() })
+            body: JSON.stringify({ playerDetail: newVal })
         });
         showToast('Spieler aktualisiert', 'success');
+        closeEditPlayerModal();
         refreshQueue();
-        if (selectedRequestId === requestId) openDetail(requestId);
+        if (selectedRequestId === editPlayerRequestId) openDetail(editPlayerRequestId);
     } catch(e) {
         showToast('Fehler', 'error');
     }

@@ -303,6 +303,36 @@
         </div>
     </div>
 
+    <!-- Edit Player Modal -->
+    <div class="modal-backdrop hidden" id="edit-player-modal">
+        <div class="modal">
+            <h3>Spieler / Details korrigieren</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">Vorlage wählen oder frei eingeben:</p>
+            <div class="form-group">
+                <label>Vorlagen</label>
+                <select class="form-control" id="player-template" onchange="applyPlayerTemplate()">
+                    <option value="">-- Vorlage wählen --</option>
+                    <option value="{name} erzielt 1 Tor">Spieler erzielt 1 Tor</option>
+                    <option value="{name} erzielt 2 Tore">Spieler erzielt 2 Tore</option>
+                    <option value="{name} erzielt 3 Tore">Spieler erzielt 3 Tore</option>
+                    <option value="{name} erzielt ein Tor jederzeit">Spieler erzielt Tor jederzeit</option>
+                    <option value="{name} erzielt das erste Tor">Spieler erzielt erstes Tor</option>
+                    <option value="{name} erzielt das letzte Tor">Spieler erzielt letztes Tor</option>
+                    <option value="{name} erhält Gelbe Karte">Spieler erhält Gelbe Karte</option>
+                    <option value="{name} erhält Rote Karte">Spieler erhält Rote Karte</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Spieler / Details (bearbeiten)</label>
+                <input type="text" class="form-control" id="edit-player-input" placeholder="z.B. Džeko erzielt 3 Tore">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditPlayerModal()" data-i18n="cancel"></button>
+                <button class="btn btn-primary" onclick="savePlayerDetail()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
