@@ -10,13 +10,16 @@
         @font-face { font-family: "Tipico Medium"; src: url("fonts/TipicoMedium.ttf") format("truetype"); font-weight: 500; }
         @font-face { font-family: "Tipico Regular"; src: url("fonts/TipicoRegular.ttf") format("truetype"); font-weight: 400; }
         @font-face { font-family: "SourceSansPro-Regular"; src: url("fonts/SourceSansPro-Regular.otf") format("opentype"); font-weight: 400; }
-        @font-face { font-family: "SourceSansPro-Bold"; src: url("fonts/SourceSansPro-Bold.otf") format("opentype"); font-weight: 700; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; width: 100%; overflow: hidden; }
+        * { margin: 0; padding: 0; }
+        html { height: 100%; }
         body {
-            font-family: "Tipico Regular", "SourceSansPro-Regular", Arial, sans-serif;
+            font-family: "Tipico Regular", "SourceSansPro-Regular", Arial, Helvetica, sans-serif;
             background-color: #1D1D1B;
             color: #ffffff;
+            overflow: hidden;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         /* Background */
@@ -27,170 +30,99 @@
         body.has-bg .bg-overlay { display: block; }
         body.has-bg .page-wrap { position: relative; z-index: 2; }
 
-        /* Full page table layout */
-        .page-wrap { width: 100%; height: 100%; display: table; }
-        .main-row { display: table-row; height: 100%; }
-        .main-cell { display: table-cell; vertical-align: middle; padding: 0; }
-        .footer-row { display: table-row; height: 30px; }
-        .footer-cell { display: table-cell; vertical-align: bottom; }
-
-        /* Two-column split */
-        .split-layout { display: table; width: 100%; height: 100%; }
-        .col-left { display: table-cell; vertical-align: middle; width: 55%; padding: 30px 30px 30px 50px; text-align: left; }
-        .col-right { display: table-cell; vertical-align: middle; width: 45%; padding: 30px 50px 30px 30px; text-align: center; border-left: 1px solid #333333; }
-
-        /* LEFT - Marketing static content */
-        .left-h1 {
-            font-family: "Tipico Medium", Arial, sans-serif;
-            font-size: 52px;
-            font-weight: bold;
-            color: #ffffff;
-            text-transform: uppercase;
-            line-height: 1.05;
-            margin-bottom: 0;
+        /* Page wrapper - full height table for vertical layout */
+        .page-wrap {
+            width: 100%;
+            height: 100%;
+            display: table;
         }
-        .left-h2 {
-            font-family: "Tipico Medium", Arial, sans-serif;
-            font-size: 52px;
-            font-weight: bold;
-            color: #dc0000;
-            text-transform: uppercase;
-            font-style: italic;
-            line-height: 1.05;
-            margin-bottom: 16px;
+        .content-row {
+            display: table-row;
+            height: 100%;
         }
-        .left-desc {
-            font-size: 18px;
-            color: #cccccc;
-            line-height: 1.5;
-            margin-bottom: 20px;
+        .content-area {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            padding: 20px;
         }
-        .examples-title {
-            font-size: 16px;
-            color: #dc0000;
-            font-weight: bold;
-            margin-bottom: 12px;
+        .footer-row {
+            display: table-row;
+            height: 30px;
         }
-        .example-item {
-            display: inline-block;
-            background-color: #2a2a2a;
-            border: 1px solid #444444;
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin: 0 8px 10px 0;
-            font-size: 16px;
-            color: #ffffff;
-        }
-        .example-icon {
-            margin-right: 6px;
-        }
-        .left-cta {
-            margin-top: 20px;
-            padding: 14px 20px;
-            background-color: #2a2a2a;
-            border: 1px solid #444444;
-            border-radius: 10px;
-        }
-        .left-cta-title {
-            font-family: "Tipico Medium", Arial, sans-serif;
-            font-size: 18px;
-            color: #ffffff;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .left-cta-sub {
-            font-size: 14px;
-            color: #999999;
+        .footer-area {
+            display: table-cell;
+            vertical-align: bottom;
         }
 
-        /* RIGHT - QR section (kept from current) */
-        .right-title {
-            font-family: "Tipico Medium", Arial, sans-serif;
-            font-size: 40px;
-            color: #dc0000;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .right-subtitle { font-size: 18px; color: #ffffff; margin-bottom: 14px; }
-        .qr-box { display: inline-block; background-color: #ffffff; padding: 20px; border: 4px solid #dc0000; border-radius: 12px; margin-bottom: 12px; }
-        .how-title { font-size: 28px; color: #ffffff; margin: 12px 0 8px; font-weight: bold; font-family: "Tipico Medium", Arial, sans-serif; text-transform: uppercase; }
-        .steps-inner { display: inline-block; margin-bottom: 12px; }
-        .steps-inner table { border-spacing: 10px 0; }
-        .steps-inner td { text-align: center; vertical-align: top; width: 90px; }
-        .step-num { display: inline-block; width: 38px; height: 38px; line-height: 38px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 20px; border-radius: 50%; }
-        .step-text { font-size: 14px; color: #ffffff; margin-top: 6px; }
-        .step-arrow { color: #666666; font-size: 20px; vertical-align: middle; }
-        .approved-box { margin: 0 auto; padding: 14px 20px; background-color: #2a2a2a; border: 1px solid #555555; text-align: left; display: inline-block; min-width: 300px; border-radius: 10px; }
-        .approved-box h3 { color: #ffd700; font-size: 16px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; text-transform: uppercase; }
-        .appr-item { padding: 5px 0; border-bottom: 1px solid #444444; }
+        /* Content */
+        h1 { font-size: 72px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
+        .subtitle { font-size: 30px; color: #ffffff; margin-bottom: 14px; }
+        .qr-box { display: inline-block; background-color: #ffffff; padding: 24px; margin: 14px 0; border: 4px solid #dc0000; border-radius: 12px; }
+        .how-title { font-size: 46px; color: #ffd700; margin: 16px 0 12px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
+        .steps-inner { display: inline-block; margin: 0 auto; }
+        .steps-inner table { border-spacing: 30px 0; margin: 0 auto; }
+        .steps-inner td { text-align: center; vertical-align: top; width: 160px; }
+        .step-num { display: inline-block; width: 48px; height: 48px; line-height: 48px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 26px; border-radius: 50%; }
+        .step-text { font-size: 22px; color: #ffffff; margin-top: 10px; }
+        .approved-box { margin: 14px auto 0; padding: 16px 26px; background-color: #444444; opacity: 0.8; border: 1px solid #666666; text-align: left; min-width: 360px; border-radius: 10px; display: block; max-width: 400px; }
+        .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
+        .appr-item { padding: 6px 0; border-bottom: 1px solid #555555; }
         .appr-item:last-child { border-bottom: none; }
-        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 11px; font-weight: bold; padding: 2px 7px; margin-right: 8px; border-radius: 3px; }
-        .appr-name { color: #ffffff; font-size: 15px; font-weight: bold; }
-        .appr-event { color: #999999; font-size: 13px; display: block; margin-top: 1px; }
-        .no-appr { color: #999999; font-size: 14px; }
+        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 12px; font-weight: bold; padding: 3px 8px; margin-right: 10px; border-radius: 3px; }
+        .appr-name { color: #ffffff; font-size: 17px; }
+        .no-appr { color: #cccccc; font-size: 16px; }
 
         /* Footer */
-        .bottom-bar { width: 100%; padding: 6px 20px; background-color: #ffffff; }
-        .legal-ticker { font-size: 12px; color: #333333; overflow: hidden; white-space: nowrap; }
-        .ticker-wrap { display: inline-block; animation: ticker 40s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .bottom-bar {
+            width: 100%;
+            padding: 7px 0;
+            background-color: #ffffff;
+        }
+        .legal-ticker {
+            font-size: 13px;
+            color: #333333;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ticker-wrap {
+            display: inline-block;
+            animation: ticker 35s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body>
 
     <div class="page-wrap">
-        <div class="main-row">
-            <div class="main-cell">
-                <div class="split-layout">
-
-                    <!-- LEFT: Static marketing -->
-                    <div class="col-left">
-                        <div class="left-h1">Dein Markt fehlt?</div>
-                        <div class="left-h2">Frag ihn einfach an!</div>
-                        <p class="left-desc">
-                            Wir pr&#252;fen deine Anfrage und machen<br>
-                            mehr Wettm&#246;glichkeiten m&#246;glich.
-                        </p>
-                        <div class="examples-title">Zum Beispiel:</div>
-                        <div class="example-item"><span class="example-icon">&#9917;</span> Spieler erzielt ein Tor</div>
-                        <div class="example-item"><span class="example-icon">&#128203;</span> &#220;ber 3.5 Karten</div>
-                        <div class="example-item"><span class="example-icon">&#9873;</span> &#220;ber 10.5 Ecken</div>
-                        <div class="example-item"><span class="example-icon">&#9918;</span> N&#228;chstes Tor</div>
-
-                        <div class="left-cta">
-                            <div class="left-cta-title">MEHR WETTM&#214;GLICHKEITEN F&#220;R DICH!</div>
-                            <div class="left-cta-sub">Gemeinsam machen wir dein Wettangebot besser.</div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT: QR + steps + approved (dynamic) -->
-                    <div class="col-right">
-                        <div class="right-title">Markt anfragen</div>
-                        <div class="right-subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</div>
-                        <div class="qr-box"><canvas id="qr-code" width="180" height="180"></canvas></div>
-                        <div class="how-title">So funktioniert es</div>
-                        <div class="steps-inner"><table><tr>
-                            <td><span class="step-num">1</span><div class="step-text">QR-Code<br>scannen</div></td>
-                            <td><span class="step-arrow">&#8594;</span></td>
-                            <td><span class="step-num">2</span><div class="step-text">Markt<br>ausw&#228;hlen</div></td>
-                            <td><span class="step-arrow">&#8594;</span></td>
-                            <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
-                        </tr></table></div>
-                        <div class="approved-box">
-                            <h3>K&#252;rzlich genehmigt</h3>
-                            <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
-                        </div>
-                    </div>
-
+        <div class="content-row">
+            <div class="content-area" align="center">
+                <div style="margin: 0 auto; display: inline-block; text-align: center;">
+                <h1>Markt anfragen</h1>
+                <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
+                <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
+                <div class="how-title">So funktioniert es</div>
+                <div class="steps-inner"><table align="center"><tr>
+                    <td align="center"><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
+                    <td align="center"><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
+                    <td align="center"><span class="step-num">3</span><div class="step-text">Absenden</div></td>
+                </tr></table></div>
+                <br>
+                <div class="approved-box">
+                    <h3>K&#252;rzlich genehmigt</h3>
+                    <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
+                </div>
                 </div>
             </div>
         </div>
         <div class="footer-row">
-            <div class="footer-cell">
+            <div class="footer-area">
                 <div class="bottom-bar">
                     <div class="legal-ticker">
-                        <span class="ticker-wrap">*Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
             </div>
@@ -202,8 +134,8 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript">
-    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:180,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
-    function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];var badge=r.status==='available'?'LIVE':'Genehmigt';var name=r.marketName||r.customMarket||'';var ev=r.eventName||'';h+='<div class="appr-item"><span class="appr-badge">'+badge+'</span><span class="appr-name">'+name+'</span>'+(ev?'<span class="appr-event">'+ev+'</span>':'')+'</div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
+    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:220,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
+    function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];h+='<div class="appr-item"><span class="appr-badge">'+(r.status==='available'?'LIVE':'Genehmigt')+'</span><span class="appr-name">'+(r.marketName||r.customMarket||'')+'</span></div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
     if(window.addEventListener){window.addEventListener('load',run,false);}else if(window.attachEvent){window.attachEvent('onload',run);}else{window.onload=run;}
     </script>
 </body>
