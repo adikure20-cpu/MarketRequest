@@ -228,7 +228,7 @@ function renderQueue(requests) {
     } else if (currentFilter === 'under_review') {
         filtered = filtered.filter(r => r.status === 'under_review');
     } else if (currentFilter === 'all') {
-        filtered = filtered.filter(r => !['declined', 'expired', 'available'].includes(r.status));
+        filtered = filtered.filter(r => !['declined', 'expired'].includes(r.status));
     } else if (currentFilter === 'high-priority') {
         filtered = filtered.filter(r => calculatePriority(r).score >= 3);
     }
