@@ -21,7 +21,7 @@
         }
         .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
         .bg-image img { width: 100%; height: 100%; }
-        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.45; display: none; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.65; display: none; }
         body.has-bg .bg-image { display: block; }
         body.has-bg .bg-overlay { display: block; }
         body.has-bg .display-page { position: relative; z-index: 2; }
@@ -35,30 +35,29 @@
         .steps-row td { text-align: center; vertical-align: top; width: 180px; }
         .step-num { display: inline-block; width: 40px; height: 40px; line-height: 40px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 22px; }
         .step-text { font-size: 18px; color: #ffffff; margin-top: 8px; }
-        .shop-box { margin: 12px auto; padding: 12px 28px; background-color: #000000; border: 1px solid #444444; display: inline-block; }
+        .shop-box { margin: 12px auto; padding: 12px 28px; background-color: #3a3a3a; opacity: 0.85; border: 1px solid #555555; display: inline-block; }
         .shop-name { color: #ffd700; font-weight: bold; font-size: 24px; }
         .shop-addr { color: #dddddd; font-size: 17px; margin-top: 3px; }
-        .approved-box { margin: 10px auto; padding: 14px 22px; background-color: #000000; border: 1px solid #444444; text-align: left; display: inline-block; min-width: 340px; }
+        .approved-box { margin: 10px auto; padding: 14px 22px; background-color: #3a3a3a; opacity: 0.85; border: 1px solid #555555; text-align: left; display: inline-block; min-width: 340px; }
         .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
         .appr-item { padding: 6px 0; border-bottom: 1px solid #333333; }
         .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 12px; font-weight: bold; padding: 3px 8px; margin-right: 10px; }
         .appr-name { color: #ffffff; font-size: 17px; }
         .no-appr { color: #999999; font-size: 16px; }
 
-        /* Bottom bar with rolling legal text */
+        /* Bottom bar with rolling legal text - pinned to screen bottom */
         .bottom-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            text-align: center;
-            padding: 8px 0;
-            background-color: #000000;
+            padding: 6px 0;
+            background-color: #ffffff;
             z-index: 500;
         }
         .legal-ticker {
-            font-size: 14px;
-            color: #999999;
+            font-size: 13px;
+            color: #333333;
             overflow: hidden;
             white-space: nowrap;
         }
