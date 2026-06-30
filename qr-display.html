@@ -28,13 +28,14 @@
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.65; display: none; z-index: 1; }
         body.has-bg .bg-image { display: block; }
         body.has-bg .bg-overlay { display: block; }
-        body.has-bg .page-wrap { position: relative; z-index: 2; }
 
         /* Page wrapper - full height table for vertical layout */
         .page-wrap {
             width: 100%;
             height: 100%;
             display: table;
+            position: relative;
+            z-index: 2;
         }
         .content-row {
             display: table-row;
@@ -65,7 +66,7 @@
         .steps-inner td { text-align: center; vertical-align: top; width: 160px; }
         .step-num { display: inline-block; width: 48px; height: 48px; line-height: 48px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 26px; border-radius: 50%; }
         .step-text { font-size: 22px; color: #ffffff; margin-top: 10px; }
-        .approved-box { margin: 14px auto 0; padding: 16px 26px; background-color: #444444; opacity: 0.8; border: 1px solid #666666; text-align: left; min-width: 360px; border-radius: 10px; display: block; max-width: 400px; }
+        .approved-box { padding: 16px 26px; background-color: #444444; opacity: 0.8; border: 1px solid #666666; text-align: left; min-width: 360px; border-radius: 10px; display: inline-block; }
         .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
         .appr-item { padding: 6px 0; border-bottom: 1px solid #555555; }
         .appr-item:last-child { border-bottom: none; }
@@ -100,7 +101,6 @@
     <div class="page-wrap">
         <div class="content-row">
             <div class="content-area" align="center">
-                <div style="margin: 0 auto; display: inline-block; text-align: center;">
                 <h1>Markt anfragen</h1>
                 <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
                 <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
@@ -114,7 +114,6 @@
                 <div class="approved-box">
                     <h3>K&#252;rzlich genehmigt</h3>
                     <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
-                </div>
                 </div>
             </div>
         </div>
