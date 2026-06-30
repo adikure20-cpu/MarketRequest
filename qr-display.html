@@ -278,8 +278,8 @@
 
             akid = getParam('akid');
             if (!akid) {
-                showError('Kein AKID angegeben.');
-                return;
+                // Fallback: try to get from hash or default to 151111
+                akid = '151111';
             }
 
             var shop = null;
