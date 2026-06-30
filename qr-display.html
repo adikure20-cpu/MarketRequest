@@ -7,117 +7,281 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <style type="text/css">
-        @font-face { font-family: "Tipico Medium"; src: url("fonts/TipicoMedium.ttf") format("truetype"); font-weight: 500; }
-        @font-face { font-family: "Tipico Regular"; src: url("fonts/TipicoRegular.ttf") format("truetype"); font-weight: 400; }
-        @font-face { font-family: "SourceSansPro-Regular"; src: url("fonts/SourceSansPro-Regular.otf") format("opentype"); font-weight: 400; }
-        * { margin: 0; padding: 0; }
-        html { height: 100%; }
+        @font-face { font-family: "Tipico Medium"; src: url("fonts/TipicoMedium.ttf") format("truetype"); }
+        @font-face { font-family: "Tipico Regular"; src: url("fonts/TipicoRegular.ttf") format("truetype"); }
+        @font-face { font-family: "SourceSansPro-Regular"; src: url("fonts/SourceSansPro-Regular.otf") format("opentype"); }
+        @font-face { font-family: "SourceSansPro-Bold"; src: url("fonts/SourceSansPro-Bold.otf") format("opentype"); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
         body {
-            font-family: "Tipico Regular", "SourceSansPro-Regular", Arial, Helvetica, sans-serif;
+            font-family: "Tipico Regular", "SourceSansPro-Regular", Arial, sans-serif;
             background-color: #1D1D1B;
             color: #ffffff;
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
         }
 
         /* Background */
         .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 0; }
-        .bg-image img { width: 100%; height: 100%; }
-        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.65; display: none; z-index: 1; }
+        .bg-image img { width: 100%; height: 100%; object-fit: cover; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.7; display: none; z-index: 1; }
         body.has-bg .bg-image { display: block; }
         body.has-bg .bg-overlay { display: block; }
         body.has-bg .page-wrap { position: relative; z-index: 2; }
 
-        /* Page wrapper - full height table for vertical layout */
-        .page-wrap {
-            width: 100%;
-            height: 100%;
-            display: table;
+        /* Layout */
+        .page-wrap { width: 100%; height: 100%; display: table; }
+        .main-row { display: table-row; height: 100%; }
+        .main-cell { display: table-cell; vertical-align: middle; padding: 30px 40px 10px; }
+        .footer-row { display: table-row; height: 32px; }
+        .footer-cell { display: table-cell; vertical-align: bottom; }
+
+        /* Three column layout */
+        .content-grid { display: table; width: 100%; height: 100%; }
+        .col-left { display: table-cell; vertical-align: top; width: 38%; padding-right: 30px; text-align: left; }
+        .col-right { display: table-cell; vertical-align: top; width: 32%; padding-left: 30px; text-align: center; }
+
+        /* Left column - headline + phone + examples */
+        .headline h1 {
+            font-family: "Tipico Medium", Arial, sans-serif;
+            font-size: 42px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 4px;
         }
-        .content-row {
-            display: table-row;
-            height: 100%;
+        .headline h2 {
+            font-family: "Tipico Medium", Arial, sans-serif;
+            font-size: 38px;
+            font-weight: bold;
+            color: #dc0000;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 12px;
         }
-        .content-area {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: center;
-            padding: 20px;
-        }
-        .footer-row {
-            display: table-row;
-            height: 30px;
-        }
-        .footer-area {
-            display: table-cell;
-            vertical-align: bottom;
+        .headline-desc {
+            font-size: 15px;
+            color: #cccccc;
+            line-height: 1.4;
+            margin-bottom: 16px;
         }
 
-        /* Content */
-        h1 { font-size: 72px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
-        .subtitle { font-size: 30px; color: #ffffff; margin-bottom: 14px; }
-        .qr-box { display: inline-block; background-color: #ffffff; padding: 24px; margin: 14px 0; border: 4px solid #dc0000; border-radius: 12px; }
-        .how-title { font-size: 46px; color: #ffd700; margin: 16px 0 12px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
-        .steps-inner { display: inline-block; }
-        .steps-inner table { border-spacing: 30px 0; }
-        .steps-inner td { text-align: center; vertical-align: top; width: 160px; }
-        .step-num { display: inline-block; width: 48px; height: 48px; line-height: 48px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 26px; border-radius: 50%; }
-        .step-text { font-size: 22px; color: #ffffff; margin-top: 10px; }
-        .approved-box { margin: 14px auto 0; padding: 16px 26px; background-color: #444444; opacity: 0.8; border: 1px solid #666666; text-align: left; display: inline-block; min-width: 360px; border-radius: 10px; }
-        .approved-box h3 { color: #ffd700; font-size: 20px; margin-bottom: 8px; }
-        .appr-item { padding: 6px 0; border-bottom: 1px solid #555555; }
+        /* Sport examples */
+        .examples-label {
+            font-size: 14px;
+            color: #dc0000;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .sport-example {
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+        }
+        .sport-example-title {
+            font-family: "Tipico Medium", Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .sport-example-title.football { color: #4caf50; }
+        .sport-example-title.basketball { color: #ff9800; }
+        .sport-example-title.tennis { color: #ffd700; }
+        .sport-example-list {
+            font-size: 13px;
+            color: #dddddd;
+            line-height: 1.5;
+        }
+        .sport-example-list span { margin-right: 6px; color: #4caf50; }
+
+        /* Right column - QR + steps + approved */
+        .right-title {
+            font-family: "Tipico Medium", Arial, sans-serif;
+            font-size: 38px;
+            color: #dc0000;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .right-subtitle {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 14px;
+        }
+        .qr-box {
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 16px;
+            border: 3px solid #dc0000;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+        .steps-row { margin: 14px 0; }
+        .steps-row table { margin: 0 auto; border-spacing: 16px 0; }
+        .steps-row td { text-align: center; vertical-align: top; width: 100px; }
+        .step-num {
+            display: inline-block;
+            width: 38px;
+            height: 38px;
+            line-height: 38px;
+            background-color: #dc0000;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 50%;
+            margin-bottom: 4px;
+        }
+        .step-icon { font-size: 24px; margin-bottom: 2px; }
+        .step-text { font-size: 13px; color: #ffffff; }
+        .step-arrow { font-size: 24px; color: #666666; vertical-align: middle; padding: 0 4px; }
+
+        /* Approved box */
+        .approved-box {
+            background-color: #2a2a2a;
+            border: 1px solid #555555;
+            border-radius: 10px;
+            padding: 12px 18px;
+            text-align: left;
+            display: inline-block;
+            min-width: 280px;
+            margin-top: 10px;
+        }
+        .approved-box h3 { color: #ffd700; font-size: 16px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
+        .appr-item { padding: 5px 0; border-bottom: 1px solid #444444; }
         .appr-item:last-child { border-bottom: none; }
-        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 12px; font-weight: bold; padding: 3px 8px; margin-right: 10px; border-radius: 3px; }
-        .appr-name { color: #ffffff; font-size: 17px; }
-        .no-appr { color: #cccccc; font-size: 16px; }
+        .appr-badge { display: inline-block; background-color: #dc0000; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; margin-right: 8px; border-radius: 3px; }
+        .appr-name { color: #ffffff; font-size: 14px; }
+        .appr-event { color: #999999; font-size: 12px; }
+        .no-appr { color: #999999; font-size: 14px; }
+
+        /* Stats bar */
+        .stats-bar {
+            margin-top: 12px;
+            padding: 8px 0;
+            border-top: 1px solid #444444;
+            text-align: center;
+        }
+        .stat-item { display: inline-block; margin: 0 20px; text-align: center; }
+        .stat-value { font-size: 22px; font-weight: bold; color: #ffffff; font-family: "Tipico Medium", Arial, sans-serif; }
+        .stat-label { font-size: 11px; color: #999999; text-transform: uppercase; }
 
         /* Footer */
-        .bottom-bar {
-            width: 100%;
-            padding: 7px 0;
-            background-color: #ffffff;
+        .bottom-bar { width: 100%; padding: 6px 20px; background-color: #ffffff; }
+        .legal-ticker { font-size: 12px; color: #333333; overflow: hidden; white-space: nowrap; }
+        .ticker-wrap { display: inline-block; animation: ticker 40s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Zuletzt genehmigt bottom bar */
+        .approved-bottom {
+            background-color: #1a1a1a;
+            border-top: 2px solid #ffd700;
+            padding: 6px 30px;
+            margin-top: 8px;
         }
-        .legal-ticker {
-            font-size: 13px;
-            color: #333333;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .ticker-wrap {
+        .approved-bottom-inner { text-align: center; }
+        .approved-bottom-label {
             display: inline-block;
-            animation: ticker 35s linear infinite;
+            background-color: #ffd700;
+            color: #000000;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 3px;
+            margin-right: 20px;
+            text-transform: uppercase;
         }
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .approved-bottom-item {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 13px;
+            color: #ffffff;
         }
+        .approved-bottom-item strong { color: #ffffff; }
+        .approved-bottom-item em { color: #999999; font-style: normal; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="page-wrap">
-        <div class="content-row">
-            <div class="content-area">
-                <h1>Markt anfragen</h1>
-                <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
-                <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
-                <div class="how-title">So funktioniert es</div>
-                <div class="steps-inner"><table><tr>
-                    <td><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
-                    <td><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
-                    <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
-                </tr></table></div>
-                <br>
-                <div class="approved-box">
-                    <h3>K&#252;rzlich genehmigt</h3>
-                    <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
+        <div class="main-row">
+            <div class="main-cell">
+                <div class="content-grid">
+                    <!-- LEFT COLUMN -->
+                    <div class="col-left">
+                        <div class="headline">
+                            <h1>Markt nicht verf&#252;gbar?</h1>
+                            <h2>Frag ihn einfach an!</h2>
+                        </div>
+                        <p class="headline-desc">
+                            Dein Wunschmarkt ist noch nicht im Angebot?<br>
+                            Scanne den QR-Code und reiche deine Anfrage ein.<br>
+                            Wir pr&#252;fen und stellen ihn schnellstm&#246;glich bereit!*
+                        </p>
+
+                        <p class="examples-label">&#8594; Beispiele beliebter Anfragen</p>
+
+                        <div class="sport-example">
+                            <div class="sport-example-title football">&#9917; FUSSBALL</div>
+                            <div class="sport-example-list">
+                                <span>&#10003;</span>Spieler erzielt ein Tor &nbsp;
+                                <span>&#10003;</span>Beide Teams treffen<br>
+                                <span>&#10003;</span>&#220;ber 9.5 Ecken &nbsp;
+                                <span>&#10003;</span>Erste Gelbe Karte
+                            </div>
+                        </div>
+                        <div class="sport-example">
+                            <div class="sport-example-title basketball">&#127936; BASKETBALL</div>
+                            <div class="sport-example-list">
+                                <span>&#10003;</span>Spieler Punkte &nbsp;
+                                <span>&#10003;</span>Rebounds &nbsp;
+                                <span>&#10003;</span>Assists
+                            </div>
+                        </div>
+                        <div class="sport-example">
+                            <div class="sport-example-title tennis">&#127934; TENNIS</div>
+                            <div class="sport-example-list">
+                                <span>&#10003;</span>Satzwetten &nbsp;
+                                <span>&#10003;</span>Games Handicap &nbsp;
+                                <span>&#10003;</span>Spieler erzielt ein Break
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="col-right">
+                        <div class="right-title">Markt anfragen</div>
+                        <div class="right-subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</div>
+                        <div class="qr-box"><canvas id="qr-code" width="180" height="180"></canvas></div>
+
+                        <div class="steps-row"><table><tr>
+                            <td>
+                                <div class="step-num">1</div>
+                                <div class="step-text">QR-Code<br>scannen</div>
+                            </td>
+                            <td style="vertical-align: middle;"><span class="step-arrow">&#8594;</span></td>
+                            <td>
+                                <div class="step-num">2</div>
+                                <div class="step-text">Markt<br>ausw&#228;hlen</div>
+                            </td>
+                            <td style="vertical-align: middle;"><span class="step-arrow">&#8594;</span></td>
+                            <td>
+                                <div class="step-num">3</div>
+                                <div class="step-text">Absenden</div>
+                            </td>
+                        </tr></table></div>
+
+                        <div class="approved-box">
+                            <h3>K&#220;RZLICH GENEHMIGT</h3>
+                            <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="footer-row">
-            <div class="footer-area">
+            <div class="footer-cell">
                 <div class="bottom-bar">
                     <div class="legal-ticker">
                         <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
@@ -132,8 +296,8 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script type="text/javascript">
-    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:220,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
-    function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];h+='<div class="appr-item"><span class="appr-badge">'+(r.status==='available'?'LIVE':'Genehmigt')+'</span><span class="appr-name">'+(r.marketName||r.customMarket||'')+'</span></div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
+    function run(){try{document.body.className='has-bg';}catch(e){}var akid='151111';try{var href=window.location.href;var idx=href.indexOf('akid=');if(idx>-1){var v=href.substring(idx+5);var amp=v.indexOf('&');if(amp>-1)v=v.substring(0,amp);var hash=v.indexOf('#');if(hash>-1)v=v.substring(0,hash);if(v.length>0)akid=v;}}catch(e){}var base='';try{base=window.location.href;var cut=base.indexOf('qr-display');if(cut>-1)base=base.substring(0,cut);}catch(e){base='/';}try{new QRious({element:document.getElementById('qr-code'),value:base+'customer.html?akid='+akid,size:180,foreground:'#1a1a1a',background:'#ffffff',level:'M'});}catch(e){}try{poll(akid);setInterval(function(){poll(akid);},10000);}catch(e){}}
+    function poll(akid){try{var xhr;if(window.XMLHttpRequest){xhr=new XMLHttpRequest();}else{xhr=new ActiveXObject('Microsoft.XMLHTTP');}xhr.open('GET','/api/requests?akid='+akid,true);xhr.onreadystatechange=function(){if(xhr.readyState==4&&xhr.status==200){try{var data=JSON.parse(xhr.responseText);var ap=[];for(var i=0;i<data.length;i++){if(data[i].status==='approved'||data[i].status==='available'){ap.push(data[i]);}}var el=document.getElementById('approved-list');if(!el)return;if(ap.length===0){el.innerHTML='<span class="no-appr">Noch keine.</span>';return;}var l=ap.slice(-4).reverse();var h='';for(var j=0;j<l.length;j++){var r=l[j];var badge=r.status==='available'?'LIVE':'Genehmigt';var name=r.marketName||r.customMarket||'';var ev=r.eventName||'';h+='<div class="appr-item"><span class="appr-badge">'+badge+'</span><strong class="appr-name">'+name+'</strong>'+(ev?' <em class="appr-event">'+ev+'</em>':'')+'</div>';}el.innerHTML=h;}catch(e){}}};xhr.send(null);}catch(e){}}
     if(window.addEventListener){window.addEventListener('load',run,false);}else if(window.attachEvent){window.attachEvent('onload',run);}else{window.onload=run;}
     </script>
 </body>
