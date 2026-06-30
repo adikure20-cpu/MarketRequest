@@ -248,15 +248,13 @@
         var baseUrl = '';
 
         function getParam(name) {
-            var s = window.location.search || '';
-            var parts = s.substring(1).split('&');
-            for (var i = 0; i < parts.length; i++) {
-                var pair = parts[i].split('=');
-                if (decodeURIComponent(pair[0]) === name) {
-                    return decodeURIComponent(pair[1] || '');
-                }
-            }
-            return null;
+            var s = window.location.href || '';
+            var i = s.indexOf('akid=');
+            if (i === -1) return null;
+            var val = s.substring(i + 5);
+            var end = val.indexOf('&');
+            if (end !== -1) val = val.substring(0, end);
+            return val;
         }
 
         function showError(msg) {
