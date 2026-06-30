@@ -11,19 +11,16 @@
         @font-face { font-family: "Tipico Regular"; src: url("fonts/TipicoRegular.ttf") format("truetype"); font-weight: 400; }
         @font-face { font-family: "SourceSansPro-Regular"; src: url("fonts/SourceSansPro-Regular.otf") format("opentype"); font-weight: 400; }
         * { margin: 0; padding: 0; }
-        html, body { height: 100%; width: 100%; }
+        html { height: 100%; }
         body {
             font-family: "Tipico Regular", "SourceSansPro-Regular", Arial, Helvetica, sans-serif;
             background-color: #1D1D1B;
             color: #ffffff;
             overflow: hidden;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
-
-        /* Full-page table layout to pin footer to bottom */
-        .page-table { width: 100%; height: 100%; border-collapse: collapse; position: relative; }
-        .page-table td { vertical-align: middle; }
-        .content-cell { text-align: center; padding: 20px 40px; width: 100%; }
-        .footer-cell { height: 30px; vertical-align: bottom; padding: 0; }
 
         /* Background */
         .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 0; }
@@ -31,15 +28,41 @@
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0.65; display: none; z-index: 1; }
         body.has-bg .bg-image { display: block; }
         body.has-bg .bg-overlay { display: block; }
-        body.has-bg .page-table { position: relative; z-index: 2; }
+        body.has-bg .page-wrap { position: relative; z-index: 2; }
+
+        /* Page wrapper - full height table for vertical layout */
+        .page-wrap {
+            width: 100%;
+            height: 100%;
+            display: table;
+        }
+        .content-row {
+            display: table-row;
+            height: 100%;
+        }
+        .content-area {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            padding: 20px;
+        }
+        .footer-row {
+            display: table-row;
+            height: 30px;
+        }
+        .footer-area {
+            display: table-cell;
+            vertical-align: bottom;
+        }
 
         /* Content */
         h1 { font-size: 72px; font-weight: 500; color: #dc0000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-family: "Tipico Medium", Arial, sans-serif; }
         .subtitle { font-size: 30px; color: #ffffff; margin-bottom: 14px; }
         .qr-box { display: inline-block; background-color: #ffffff; padding: 24px; margin: 14px 0; border: 4px solid #dc0000; border-radius: 12px; }
         .how-title { font-size: 46px; color: #ffd700; margin: 16px 0 12px; font-weight: 500; font-family: "Tipico Medium", Arial, sans-serif; }
-        .steps-row table { margin: 0 auto; }
-        .steps-row td { text-align: center; vertical-align: top; }
+        .steps-inner { display: inline-block; }
+        .steps-inner table { border-spacing: 30px 0; }
+        .steps-inner td { text-align: center; vertical-align: top; width: 160px; }
         .step-num { display: inline-block; width: 48px; height: 48px; line-height: 48px; background-color: #dc0000; color: #ffffff; font-weight: bold; font-size: 26px; border-radius: 50%; }
         .step-text { font-size: 22px; color: #ffffff; margin-top: 10px; }
         .approved-box { margin: 14px auto 0; padding: 16px 26px; background-color: #444444; opacity: 0.8; border: 1px solid #666666; text-align: left; display: inline-block; min-width: 360px; border-radius: 10px; }
@@ -50,7 +73,7 @@
         .appr-name { color: #ffffff; font-size: 17px; }
         .no-appr { color: #cccccc; font-size: 16px; }
 
-        /* Footer - rolling legal text */
+        /* Footer */
         .bottom-bar {
             width: 100%;
             padding: 7px 0;
@@ -73,35 +96,36 @@
     </style>
 </head>
 <body>
-    <!-- Full-height table: content on top, footer pinned to bottom -->
-    <center>
-    <table class="page-table" width="100%" cellpadding="0" cellspacing="0"><tr><td class="content-cell" align="center" valign="middle">
 
-        <h1>Markt anfragen</h1>
-        <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
-        <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
-        <div class="how-title">So funktioniert es</div>
-        <div class="steps-row"><table cellpadding="0" cellspacing="20" align="center"><tr>
-            <td align="center" width="160"><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
-            <td align="center" width="160"><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
-            <td align="center" width="160"><span class="step-num">3</span><div class="step-text">Absenden</div></td>
-        </tr></table></div>
-        <br>
-        <div class="approved-box">
-            <h3>K&#252;rzlich genehmigt</h3>
-            <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
-        </div>
-
-    </td></tr><tr><td class="footer-cell" align="center" valign="bottom">
-
-        <div class="bottom-bar">
-            <div class="legal-ticker">
-                <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
+    <div class="page-wrap">
+        <div class="content-row">
+            <div class="content-area">
+                <h1>Markt anfragen</h1>
+                <p class="subtitle">Markt nicht gefunden? Scannen &amp; anfragen!</p>
+                <div class="qr-box"><canvas id="qr-code" width="220" height="220"></canvas></div>
+                <div class="how-title">So funktioniert es</div>
+                <div class="steps-inner"><table><tr>
+                    <td><span class="step-num">1</span><div class="step-text">QR-Code scannen</div></td>
+                    <td><span class="step-num">2</span><div class="step-text">Markt ausw&#228;hlen</div></td>
+                    <td><span class="step-num">3</span><div class="step-text">Absenden</div></td>
+                </tr></table></div>
+                <br>
+                <div class="approved-box">
+                    <h3>K&#252;rzlich genehmigt</h3>
+                    <div id="approved-list"><span class="no-appr">Noch keine genehmigten M&#228;rkte.</span></div>
+                </div>
             </div>
         </div>
-
-    </td></tr></table>
-    </center>
+        <div class="footer-row">
+            <div class="footer-area">
+                <div class="bottom-bar">
+                    <div class="legal-ticker">
+                        <span class="ticker-wrap">*Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp; *Hinweis: Es werden ausschlie&#223;lich Wettm&#228;rkte ber&#252;cksichtigt, die gem&#228;&#223; der deutschen Gl&#252;cksspielregulierung (GGL) zul&#228;ssig sind. Es besteht kein Anspruch auf Genehmigung einer Marktanfrage. Nicht jede Anfrage kann ber&#252;cksichtigt werden. &nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
     <div class="bg-overlay"></div>
