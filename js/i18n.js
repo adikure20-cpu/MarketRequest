@@ -210,12 +210,12 @@ TRANSLATIONS.de = {
     time_days_ago: 'Tage her',
 
     // Game/Event prompt
-    cust_game_prompt_title: 'Für welches Spiel?',
-    cust_game_prompt_desc: 'Geben Sie den Spielnamen oder die ID vom Infoscreen ein.',
-    cust_game_prompt_placeholder: 'z.B. Liverpool vs Arsenal oder ID 4521',
+    cust_game_prompt_title: 'ID vom Infoscreen',
+    cust_game_prompt_desc: 'Bitte die ID vom Infoscreen eingeben.',
+    cust_game_prompt_placeholder: 'z.B. 4521',
     cust_game_prompt_confirm: 'Übernehmen',
     cust_game_prompt_skip: 'Überspringen',
-    cust_game_mandatory_hint: 'Pflichtfeld: Bitte Spielname oder Infoscreen-ID eingeben.',
+    cust_game_mandatory_hint: 'Pflichtfeld: Bitte Infoscreen-ID eingeben.',
 
     // Wizard steps
     cust_step_sport: 'Sportart wählen',
@@ -421,12 +421,12 @@ TRANSLATIONS.en = {
     time_hours_ago: 'hours ago',
     time_days_ago: 'days ago',
 
-    cust_game_prompt_title: 'Which game?',
-    cust_game_prompt_desc: 'Enter the game name or ID from the Infoscreen.',
-    cust_game_prompt_placeholder: 'e.g. Liverpool vs Arsenal or ID 4521',
+    cust_game_prompt_title: 'Infoscreen ID',
+    cust_game_prompt_desc: 'Please enter the ID from the Infoscreen.',
+    cust_game_prompt_placeholder: 'e.g. 4521',
     cust_game_prompt_confirm: 'Confirm',
     cust_game_prompt_skip: 'Skip',
-    cust_game_mandatory_hint: 'Required: Please enter game name or Infoscreen ID.',
+    cust_game_mandatory_hint: 'Required: Please enter Infoscreen ID.',
 
     cust_step_sport: 'Choose Sport',
     cust_step_market: 'Choose Market',
@@ -631,12 +631,12 @@ TRANSLATIONS.hr = {
     time_hours_ago: 'sati prije',
     time_days_ago: 'dana prije',
 
-    cust_game_prompt_title: 'Za koju utakmicu?',
-    cust_game_prompt_desc: 'Unesite naziv utakmice ili ID s Infoscreena.',
-    cust_game_prompt_placeholder: 'npr. Liverpool vs Arsenal ili ID 4521',
+    cust_game_prompt_title: 'ID s Infoscreena',
+    cust_game_prompt_desc: 'Molimo unesite ID s Infoscreena.',
+    cust_game_prompt_placeholder: 'npr. 4521',
     cust_game_prompt_confirm: 'Potvrdi',
     cust_game_prompt_skip: 'Preskoči',
-    cust_game_mandatory_hint: 'Obavezno: Unesite naziv utakmice ili ID s Infoscreena.',
+    cust_game_mandatory_hint: 'Obavezno: Unesite ID s Infoscreena.',
 
     cust_step_sport: 'Odaberi sport',
     cust_step_market: 'Odaberi tržište',
@@ -841,12 +841,12 @@ TRANSLATIONS.tr = {
     time_hours_ago: 'saat önce',
     time_days_ago: 'gün önce',
 
-    cust_game_prompt_title: 'Hangi maç?',
-    cust_game_prompt_desc: 'Maç adını veya Infoscreen ID\'sini girin.',
-    cust_game_prompt_placeholder: 'örn. Liverpool vs Arsenal veya ID 4521',
+    cust_game_prompt_title: 'Infoscreen ID',
+    cust_game_prompt_desc: 'Lütfen Infoscreen ID girin.',
+    cust_game_prompt_placeholder: 'örn. 4521',
     cust_game_prompt_confirm: 'Onayla',
     cust_game_prompt_skip: 'Atla',
-    cust_game_mandatory_hint: 'Zorunlu: Lütfen maç adını veya Infoscreen ID girin.',
+    cust_game_mandatory_hint: 'Zorunlu: Lütfen Infoscreen ID girin.',
 
     cust_step_sport: 'Spor Seç',
     cust_step_market: 'Bahis Seç',
