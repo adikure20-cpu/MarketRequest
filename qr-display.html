@@ -20,9 +20,9 @@
             position: relative;
         }
 
-        /* Background image layer - same pattern as Jersey project */
+        /* Background image layer */
         .bg-image {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -32,18 +32,17 @@
         .bg-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
         }
 
-        /* Overlay */
-        body::before {
-            content: '';
-            position: fixed;
+        /* Overlay - real div, no pseudo-element */
+        .bg-overlay {
+            position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            opacity: 0.6;
             z-index: 1;
         }
 
@@ -220,6 +219,7 @@
 <body>
 
     <div class="bg-image"><img src="img/bg-sports.jpg" alt=""></div>
+    <div class="bg-overlay"></div>
 
     <div class="display-page">
         <div id="main-container"></div>
