@@ -271,6 +271,7 @@ function renderQueue(requests) {
                     </div>
                 </td>
                 <td class="request-market-cell">${escapeHtml(market)}</td>
+                <td class="request-shop-cell">${req.playerDetail ? '👤 ' + escapeHtml(req.playerDetail) : '—'}</td>
                 <td class="request-shop-cell">${escapeHtml(req.accountName || req.akid)}</td>
                 <td class="request-time-cell">${eventTimeStr}</td>
                 <td class="request-time-cell">${timeAgo}</td>
@@ -476,6 +477,7 @@ async function renderAllRequests(searchQuery) {
                 <tr onclick="openDetail('${req.id}')" style="cursor: pointer;">
                     <td style="font-size: 0.8rem; color: var(--text-muted);">${req.id}</td>
                     <td class="request-market-cell">${escapeHtml(market)}</td>
+                    <td class="request-shop-cell">${req.playerDetail ? '👤 ' + escapeHtml(req.playerDetail) : '—'}</td>
                     <td class="request-shop-cell">${escapeHtml(req.accountName || req.akid)}</td>
                     <td class="request-shop-cell">${req.customerId ? req.customerId.substring(0, 12) + '...' : '—'}</td>
                     <td class="request-time-cell">${formatDate(req.submittedAt)}</td>
