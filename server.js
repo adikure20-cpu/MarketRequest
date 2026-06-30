@@ -116,6 +116,18 @@ async function handleAPI(req, res, urlPath, method) {
     // POST /api/requests - create a new request
     if (urlPath === '/api/requests' && method === 'POST') {
         const body = await parseBody(req);
+
+        // Prevent duplicate submissions (same customer, same market, within last 60 seconds)
+        const recentDupe = data.requests.find(r => 
+            r.customerId === body.customerId &&
+            (r.marketName === body.marketName || r.customMarket === body.customMarket) &&
+            r.akid === body.akid &&
+            (Date.now() - new Date(r.submittedAt).getTime()) < 60000
+        );
+        if (recentDupe) {
+            return sendJSON(res, 200, recentDupe); // Return existing request instead of creating duplicate
+        }
+
         const request = {
             ...body,
             id: generateId('REQ'),

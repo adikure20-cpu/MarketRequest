@@ -242,12 +242,16 @@ function updateSummary() {
 
 // --- Submit (API) ---
 async function submitRequest() {
+    var submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) submitBtn.disabled = true;
+
     const customMarket = document.getElementById('custom-market').value.trim();
     const eventName = document.getElementById('event-name').value.trim();
     const marketName = selectedMarket ? selectedMarket.name : customMarket;
 
     if (!marketName) {
         showToast(I18n.t('cust_error_no_shop'), 'warning');
+        if (submitBtn) submitBtn.disabled = false;
         return;
     }
 
@@ -260,6 +264,7 @@ async function submitRequest() {
         );
         if (duplicate) {
             showToast(I18n.t('cust_duplicate_warning'), 'warning');
+            if (submitBtn) submitBtn.disabled = false;
             return;
         }
     } catch (e) {
@@ -295,9 +300,11 @@ async function submitRequest() {
             updateNotificationBadge();
         } else {
             showToast('Error submitting request', 'error');
+            if (submitBtn) submitBtn.disabled = false;
         }
     } catch (e) {
         showToast('Network error', 'error');
+        if (submitBtn) submitBtn.disabled = false;
     }
 }
 
