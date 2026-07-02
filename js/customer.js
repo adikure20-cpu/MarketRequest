@@ -162,8 +162,13 @@ function renderSportGrid() {
 
 function selectSport(sport) {
     selectedSport = sport;
-    renderMarketsForSport(sport);
-    goToStep(2);
+    if (sport === 'Nach Wunsch') {
+        selectedMarket = null;
+        goToStep(3);
+    } else {
+        renderMarketsForSport(sport);
+        goToStep(2);
+    }
 }
 
 // --- STEP 2: Market Selection ---

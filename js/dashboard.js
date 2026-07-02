@@ -410,7 +410,7 @@ async function openDetail(requestId) {
             </div>
             ${request.playerDetail ? `
                 <div class="detail-info-item">
-                    <label>Spieler / Details</label>
+                    <label>Details</label>
                     <div class="value">👤 ${escapeHtml(request.playerDetail)} <button class="btn btn-secondary btn-sm" onclick="editPlayerDetail('${request.id}')" style="margin-left: 8px;">✏️</button></div>
                 </div>
             ` : ''}

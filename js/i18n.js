@@ -125,7 +125,7 @@ TRANSLATIONS.de = {
     dash_filter_priority: 'Priorität',
     dash_col_priority: 'Priorität',
     dash_col_market: 'Markt',
-    dash_col_player: 'Spieler/Details',
+    dash_col_player: 'Details',
     dash_col_shop: 'Shop',
     dash_col_event_time: 'Eventzeit',
     dash_col_submitted: 'Eingereicht',
@@ -215,12 +215,12 @@ TRANSLATIONS.de = {
     time_days_ago: 'Tage her',
 
     // Game/Event prompt
-    cust_game_prompt_title: 'ID vom Infoscreen',
-    cust_game_prompt_desc: 'Bitte die ID vom Infoscreen eingeben.',
-    cust_game_prompt_placeholder: 'z.B. 4521',
+    cust_game_prompt_title: 'ID oder Spielname',
+    cust_game_prompt_desc: 'Bitte die ID vom Infoscreen oder den Spielnamen eingeben (z.B. Team 1 vs Team 2).',
+    cust_game_prompt_placeholder: 'z.B. 4521 oder Bayern vs Dortmund',
     cust_game_prompt_confirm: 'Übernehmen',
     cust_game_prompt_skip: 'Überspringen',
-    cust_game_mandatory_hint: 'Pflichtfeld: Bitte Infoscreen-ID eingeben.',
+    cust_game_mandatory_hint: 'Pflichtfeld: Bitte ID oder Spielname eingeben.',
 
     // Wizard steps
     cust_step_sport: 'Sportart wählen',
@@ -229,8 +229,8 @@ TRANSLATIONS.de = {
     cust_step_back: 'Zurück',
     cust_step_next: 'Weiter',
 
-    cust_player_title: 'Spieler / Details',
-    cust_player_desc: 'Welcher Spieler? Was genau? (z.B. Dzeko erzielt 3 Tore)',
+    cust_player_title: 'Details',
+    cust_player_desc: 'Was genau möchtest du wetten? (z.B. Dzeko erzielt 3 Tore, Über 2.5 Tore, etc.)',
     cust_player_placeholder: 'z.B. Dzeko erzielt 3 Tore',
 };
 
@@ -344,7 +344,7 @@ TRANSLATIONS.en = {
     dash_filter_priority: 'Priority',
     dash_col_priority: 'Priority',
     dash_col_market: 'Market',
-    dash_col_player: 'Player/Details',
+    dash_col_player: 'Details',
     dash_col_shop: 'Shop',
     dash_col_event_time: 'Event Time',
     dash_col_submitted: 'Submitted',
@@ -431,12 +431,12 @@ TRANSLATIONS.en = {
     time_hours_ago: 'hours ago',
     time_days_ago: 'days ago',
 
-    cust_game_prompt_title: 'Infoscreen ID',
-    cust_game_prompt_desc: 'Please enter the ID from the Infoscreen.',
-    cust_game_prompt_placeholder: 'e.g. 4521',
+    cust_game_prompt_title: 'ID or Game Name',
+    cust_game_prompt_desc: 'Please enter the Infoscreen ID or game name (e.g. Team 1 vs Team 2).',
+    cust_game_prompt_placeholder: 'e.g. 4521 or Bayern vs Dortmund',
     cust_game_prompt_confirm: 'Confirm',
     cust_game_prompt_skip: 'Skip',
-    cust_game_mandatory_hint: 'Required: Please enter Infoscreen ID.',
+    cust_game_mandatory_hint: 'Required: Please enter ID or game name.',
 
     cust_step_sport: 'Choose Sport',
     cust_step_market: 'Choose Market',
@@ -444,8 +444,8 @@ TRANSLATIONS.en = {
     cust_step_back: 'Back',
     cust_step_next: 'Next',
 
-    cust_player_title: 'Player / Details',
-    cust_player_desc: 'Which player? What exactly? (e.g. Dzeko scores 3 goals)',
+    cust_player_title: 'Details',
+    cust_player_desc: 'What exactly do you want to bet? (e.g. Dzeko scores 3 goals, Over 2.5 goals, etc.)',
     cust_player_placeholder: 'e.g. Dzeko scores 3 goals',
 };
 
@@ -559,7 +559,7 @@ TRANSLATIONS.hr = {
     dash_filter_priority: 'Prioritet',
     dash_col_priority: 'Prioritet',
     dash_col_market: 'Tržište',
-    dash_col_player: 'Igrač/Detalji',
+    dash_col_player: 'Detalji',
     dash_col_shop: 'Poslovnica',
     dash_col_event_time: 'Vrijeme eventa',
     dash_col_submitted: 'Poslano',
@@ -646,12 +646,12 @@ TRANSLATIONS.hr = {
     time_hours_ago: 'sati prije',
     time_days_ago: 'dana prije',
 
-    cust_game_prompt_title: 'ID s Infoscreena',
-    cust_game_prompt_desc: 'Molimo unesite ID s Infoscreena.',
-    cust_game_prompt_placeholder: 'npr. 4521',
+    cust_game_prompt_title: 'ID ili naziv utakmice',
+    cust_game_prompt_desc: 'Unesite ID s Infoscreena ili naziv utakmice (npr. Tim 1 vs Tim 2).',
+    cust_game_prompt_placeholder: 'npr. 4521 ili Bayern vs Dortmund',
     cust_game_prompt_confirm: 'Potvrdi',
     cust_game_prompt_skip: 'Preskoči',
-    cust_game_mandatory_hint: 'Obavezno: Unesite ID s Infoscreena.',
+    cust_game_mandatory_hint: 'Obavezno: Unesite ID ili naziv utakmice.',
 
     cust_step_sport: 'Odaberi sport',
     cust_step_market: 'Odaberi tržište',
@@ -659,8 +659,8 @@ TRANSLATIONS.hr = {
     cust_step_back: 'Natrag',
     cust_step_next: 'Dalje',
 
-    cust_player_title: 'Igrač / Detalji',
-    cust_player_desc: 'Koji igrač? Što točno? (npr. Džeko postiže 3 gola)',
+    cust_player_title: 'Detalji',
+    cust_player_desc: 'Što točno želiš kladiti? (npr. Džeko postiže 3 gola, Preko 2.5 golova, itd.)',
     cust_player_placeholder: 'npr. Džeko postiže 3 gola',
 };
 
@@ -774,7 +774,7 @@ TRANSLATIONS.tr = {
     dash_filter_priority: 'Öncelik',
     dash_col_priority: 'Öncelik',
     dash_col_market: 'Bahis',
-    dash_col_player: 'Oyuncu/Detay',
+    dash_col_player: 'Detaylar',
     dash_col_shop: 'Şube',
     dash_col_event_time: 'Etkinlik Zamanı',
     dash_col_submitted: 'Gönderildi',
@@ -861,12 +861,12 @@ TRANSLATIONS.tr = {
     time_hours_ago: 'saat önce',
     time_days_ago: 'gün önce',
 
-    cust_game_prompt_title: 'Infoscreen ID',
-    cust_game_prompt_desc: 'Lütfen Infoscreen ID girin.',
-    cust_game_prompt_placeholder: 'örn. 4521',
+    cust_game_prompt_title: 'ID veya Maç Adı',
+    cust_game_prompt_desc: 'Infoscreen ID veya maç adını girin (örn. Takım 1 vs Takım 2).',
+    cust_game_prompt_placeholder: 'örn. 4521 veya Bayern vs Dortmund',
     cust_game_prompt_confirm: 'Onayla',
     cust_game_prompt_skip: 'Atla',
-    cust_game_mandatory_hint: 'Zorunlu: Lütfen Infoscreen ID girin.',
+    cust_game_mandatory_hint: 'Zorunlu: ID veya maç adı girin.',
 
     cust_step_sport: 'Spor Seç',
     cust_step_market: 'Bahis Seç',
@@ -874,8 +874,8 @@ TRANSLATIONS.tr = {
     cust_step_back: 'Geri',
     cust_step_next: 'İleri',
 
-    cust_player_title: 'Oyuncu / Detaylar',
-    cust_player_desc: 'Hangi oyuncu? Ne tam olarak? (örn. Dzeko 3 gol atar)',
+    cust_player_title: 'Detaylar',
+    cust_player_desc: 'Tam olarak ne üzerine bahis yapmak istiyorsunuz? (örn. Dzeko 3 gol atar, 2.5 üstü gol, vb.)',
     cust_player_placeholder: 'örn. Dzeko 3 gol atar',
 };
 
