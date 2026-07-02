@@ -151,8 +151,6 @@ function renderSportGrid() {
             sports.push(PRESET_MARKETS[i].category);
         }
     }
-    if (sports.indexOf('Sonstiges') === -1) sports.push('Sonstiges');
-
     const grid = document.getElementById('sport-grid');
     grid.innerHTML = sports.map(sport => `
         <div class="sport-card" onclick="selectSport('${sport}')">
