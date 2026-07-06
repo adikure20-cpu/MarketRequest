@@ -280,7 +280,7 @@ function renderQueue(requests) {
                     <div class="request-actions" onclick="event.stopPropagation()">
                         ${req.status === 'submitted' ? `<button class="btn btn-primary btn-sm" onclick="quickAction('${req.id}', 'under_review')">${I18n.t('dash_btn_review')}</button>` : ''}
                         ${['submitted', 'under_review'].includes(req.status) ? `
-                            <button class="btn btn-success btn-sm" onclick="quickAction('${req.id}', 'available')">${I18n.t('dash_btn_approve')}</button>
+                            <button class="btn btn-success btn-sm" onclick="openApproveModal('${req.id}')">${I18n.t('dash_btn_approve')}</button>
                             <button class="btn btn-danger btn-sm" onclick="openDeclineModal('${req.id}')">${I18n.t('dash_btn_decline')}</button>
                         ` : ''}
                     </div>
@@ -351,6 +351,57 @@ async function confirmDecline() {
     }
 }
 
+// --- Approve Modal ---
+var approveRequestId = null;
+
+function openApproveModal(requestId) {
+    approveRequestId = requestId;
+    // Set default date to today + 1 day
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('approve-visible-date').value = tomorrow.toISOString().split('T')[0];
+    document.getElementById('approve-visible-time').value = '23:59';
+    document.getElementById('approve-modal').classList.remove('hidden');
+}
+
+function closeApproveModal() {
+    approveRequestId = null;
+    document.getElementById('approve-modal').classList.add('hidden');
+}
+
+async function confirmApprove() {
+    if (!approveRequestId) return;
+    var dateVal = document.getElementById('approve-visible-date').value;
+    var timeVal = document.getElementById('approve-visible-time').value || '23:59';
+    if (!dateVal) {
+        showToast('Bitte Datum eingeben', 'warning');
+        return;
+    }
+    var visibleUntil = dateVal + 'T' + timeVal;
+    var bookieName = localStorage.getItem('bookieName') || 'Bookie Admin';
+
+    try {
+        // First set the visibleUntil field
+        await fetch(API_BASE + '/requests/' + approveRequestId, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ visibleUntil: visibleUntil })
+        });
+        // Then approve (set to available)
+        await fetch(API_BASE + '/requests/' + approveRequestId + '/status', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'available', note: I18n.t('dash_approve_note'), userId: bookieName })
+        });
+        showToast(I18n.getStatusLabel('available'), 'success');
+        closeApproveModal();
+        refreshQueue();
+        if (selectedRequestId === approveRequestId) openDetail(approveRequestId);
+    } catch(e) {
+        showToast('Fehler', 'error');
+    }
+}
+
 // --- Detail Panel ---
 async function openDetail(requestId) {
     selectedRequestId = requestId;
@@ -414,12 +465,18 @@ async function openDetail(requestId) {
                     <div class="value">👤 ${escapeHtml(request.playerDetail)} <button class="btn btn-secondary btn-sm" onclick="editPlayerDetail('${request.id}')" style="margin-left: 8px;">✏️</button></div>
                 </div>
             ` : ''}
+            ${request.visibleUntil ? `
+                <div class="detail-info-item">
+                    <label>Sichtbar bis</label>
+                    <div class="value">${formatDate(request.visibleUntil)}</div>
+                </div>
+            ` : ''}
         </div>
 
         <div class="detail-actions">
             ${request.status === 'submitted' ? `<button class="btn btn-warning" onclick="quickAction('${request.id}', 'under_review')">🔍 ${I18n.t('dash_btn_review')}</button>` : ''}
             ${['submitted', 'under_review'].includes(request.status) ? `
-                <button class="btn btn-success" onclick="quickAction('${request.id}', 'available')">✓ ${I18n.t('dash_btn_approve')}</button>
+                <button class="btn btn-success" onclick="openApproveModal('${request.id}')">✓ ${I18n.t('dash_btn_approve')}</button>
                 <button class="btn btn-danger" onclick="openDeclineModal('${request.id}')">✗ ${I18n.t('dash_btn_decline')}</button>
             ` : ''}
             ${!['expired', 'available'].includes(request.status) ? `<button class="btn btn-secondary" onclick="quickAction('${request.id}', 'expired')">⏰ ${I18n.t('dash_btn_expire')}</button>` : ''}

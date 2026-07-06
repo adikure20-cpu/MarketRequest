@@ -227,6 +227,7 @@ async function handleAPI(req, res, urlPath, method) {
         if (body.playerDetail !== undefined) request.playerDetail = body.playerDetail;
         if (body.eventName !== undefined) request.eventName = body.eventName;
         if (body.marketName !== undefined) request.marketName = body.marketName;
+        if (body.visibleUntil !== undefined) request.visibleUntil = body.visibleUntil;
         request.lastUpdated = new Date().toISOString();
 
         writeData(data);

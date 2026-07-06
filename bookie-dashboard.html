@@ -333,6 +333,25 @@
         </div>
     </div>
 
+    <!-- Approve Modal -->
+    <div class="modal-backdrop hidden" id="approve-modal">
+        <div class="modal">
+            <h3>Wette genehmigen</h3>
+            <div class="form-group">
+                <label>Sichtbar bis (Pflichtfeld)</label>
+                <input type="date" class="form-control" id="approve-visible-date" required>
+            </div>
+            <div class="form-group">
+                <label>Uhrzeit</label>
+                <input type="time" class="form-control" id="approve-visible-time" value="23:59">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeApproveModal()">Abbrechen</button>
+                <button class="btn btn-success" onclick="confirmApprove()">Genehmigen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
