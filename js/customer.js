@@ -250,10 +250,26 @@ async function submitRequest() {
 
     const customMarket = document.getElementById('custom-market').value.trim();
     const eventName = document.getElementById('event-name').value.trim();
-    const marketName = selectedMarket ? selectedMarket.name : customMarket;
+    const playerDetail = document.getElementById('player-detail').value.trim();
 
-    if (!marketName) {
+    // Determine market name: preset market, custom-market field, or for "Nach Wunsch" use category label
+    let marketName = '';
+    if (selectedMarket) {
+        marketName = selectedMarket.name;
+    } else if (customMarket) {
+        marketName = customMarket;
+    } else if (selectedSport === 'Nach Wunsch') {
+        marketName = 'Eigene Wette';
+    }
+
+    // Validate we have the essential info (shop + something to request)
+    if (!shopContext.akid) {
         showToast(I18n.t('cust_error_no_shop'), 'warning');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
+        return;
+    }
+    if (!marketName && !playerDetail) {
+        showToast(I18n.t('cust_game_mandatory_hint'), 'warning');
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
         return;
     }
@@ -265,11 +281,11 @@ async function submitRequest() {
         region: shopContext.region,
         customerId,
         marketId: selectedMarket ? selectedMarket.id : null,
-        marketName: selectedMarket ? selectedMarket.name : null,
+        marketName: selectedMarket ? selectedMarket.name : (selectedSport === 'Nach Wunsch' ? 'Eigene Wette' : null),
         customMarket: customMarket || null,
         category: selectedSport || 'Custom',
         eventName: eventName || null,
-        playerDetail: document.getElementById('player-detail').value.trim() || null,
+        playerDetail: playerDetail || null,
         eventTime: null,
         notes: null,
         source: 'qr_scan'
