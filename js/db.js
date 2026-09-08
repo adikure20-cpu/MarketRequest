@@ -25,6 +25,40 @@ async function initDb() {
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS requests (
+                id VARCHAR(64) PRIMARY KEY,
+                akid VARCHAR(64),
+                customer_id VARCHAR(64),
+                status VARCHAR(20),
+                submitted_at TIMESTAMP DEFAULT NOW(),
+                data JSONB NOT NULL
+            )
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id VARCHAR(64) PRIMARY KEY,
+                request_id VARCHAR(64),
+                data JSONB NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS notifications (
+                id VARCHAR(64) PRIMARY KEY,
+                customer_id VARCHAR(64),
+                data JSONB NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS shop_heartbeats (
+                akid VARCHAR(64) PRIMARY KEY,
+                last_seen TIMESTAMP DEFAULT NOW(),
+                first_seen TIMESTAMP DEFAULT NOW(),
+                hit_count INTEGER DEFAULT 1
+            )
+        `);
         // Seed admin user if not exists
         const bcrypt = require('bcryptjs');
         const adminEmail = 'adi.kuric@tipico.com';

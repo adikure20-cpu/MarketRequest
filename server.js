@@ -5,10 +5,10 @@ const QRCode = require('qrcode');
 const Validation = require('./js/validation.js');
 const { initDb } = require('./js/db.js');
 const auth = require('./js/auth.js');
+const store = require('./js/store.js');
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
-const DATA_FILE = path.join(__dirname, 'data', 'requests.json');
 
 // --- MIME Types ---
 const MIME_TYPES = {
@@ -25,31 +25,6 @@ const MIME_TYPES = {
     '.woff': 'font/woff',
     '.woff2': 'font/woff2'
 };
-
-// --- Data Store ---
-function readData() {
-    try {
-        if (fs.existsSync(DATA_FILE)) {
-            return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-        }
-    } catch (e) {
-        console.error('Error reading data file:', e.message);
-    }
-    return { requests: [], auditLog: [], notifications: [] };
-}
-
-function writeData(data) {
-    try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
-    } catch (e) {
-        console.error('Error writing data file:', e.message);
-    }
-}
-
-// Ensure data file exists
-if (!fs.existsSync(DATA_FILE)) {
-    writeData({ requests: [], auditLog: [], notifications: [] });
-}
 
 // --- Helpers ---
 function parseBody(req) {
@@ -72,10 +47,6 @@ function sendJSON(res, statusCode, data) {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     });
     res.end(JSON.stringify(data));
-}
-
-function generateId(prefix) {
-    return prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
 }
 
 function getToken(req) {
@@ -102,27 +73,22 @@ async function handleAPI(req, res, urlPath, method) {
         return;
     }
 
-    const data = readData();
-
     // GET /api/requests - get all requests (optional ?akid= filter)
     if (urlPath === '/api/requests' && method === 'GET') {
         const url = new URL(req.url, `http://${req.headers.host}`);
-        const akid = url.searchParams.get('akid');
-        const customerId = url.searchParams.get('customerId');
-        const status = url.searchParams.get('status');
-
-        let results = data.requests;
-        if (akid) results = results.filter(r => r.akid === akid);
-        if (customerId) results = results.filter(r => r.customerId === customerId);
-        if (status) results = results.filter(r => r.status === status);
-
+        const filters = {
+            akid: url.searchParams.get('akid'),
+            customerId: url.searchParams.get('customerId'),
+            status: url.searchParams.get('status')
+        };
+        const results = await store.getRequests(filters);
         return sendJSON(res, 200, results);
     }
 
     // GET /api/requests/:id
     if (urlPath.match(/^\/api\/requests\/[^/]+$/) && method === 'GET') {
         const id = urlPath.split('/').pop();
-        const request = data.requests.find(r => r.id === id);
+        const request = await store.getRequestById(id);
         if (!request) return sendJSON(res, 404, { error: 'Not found' });
         return sendJSON(res, 200, request);
     }
@@ -148,14 +114,8 @@ async function handleAPI(req, res, urlPath, method) {
 
         // Duplicate check - same shop + same market + same event
         const marketCheck = body.marketName || body.customMarket || '';
-        const eventCheck = body.eventName || '';
         if (marketCheck) {
-            const existing = data.requests.find(r =>
-                r.akid === body.akid &&
-                (r.marketName === marketCheck || r.customMarket === marketCheck) &&
-                (r.eventName || '') === eventCheck &&
-                !['declined', 'expired'].includes(r.status)
-            );
+            const existing = await store.findDuplicate(body.akid, marketCheck, body.eventName);
             if (existing) {
                 return sendJSON(res, 409, {
                     error: 'duplicate',
@@ -166,32 +126,7 @@ async function handleAPI(req, res, urlPath, method) {
             }
         }
 
-        const request = {
-            ...body,
-            id: generateId('REQ'),
-            submittedAt: new Date().toISOString(),
-            status: 'submitted',
-            lastUpdated: null,
-            statusHistory: [{
-                status: 'submitted',
-                timestamp: new Date().toISOString(),
-                noteCode: 'note_submitted'
-            }]
-        };
-        data.requests.push(request);
-
-        // Audit log
-        data.auditLog.push({
-            id: generateId('LOG'),
-            action: 'request_created',
-            requestId: request.id,
-            fromStatus: null,
-            toStatus: 'submitted',
-            details: { akid: request.akid },
-            timestamp: new Date().toISOString()
-        });
-
-        writeData(data);
+        const request = await store.addRequest(body);
         return sendJSON(res, 201, request);
     }
 
@@ -202,52 +137,50 @@ async function handleAPI(req, res, urlPath, method) {
         if (authUser.role !== 'bookie') return sendJSON(res, 403, { error: 'admin_cannot_approve' });
         const id = urlPath.split('/')[3];
         const body = await parseBody(req);
-        const { status: newStatus, note, userId } = body;
-
-        const request = data.requests.find(r => r.id === id);
+        const request = await store.getRequestById(id);
         if (!request) return sendJSON(res, 404, { error: 'Not found' });
 
         // Skip if status is already the same
-        if (request.status === newStatus) {
+        if (request.status === body.status) {
             return sendJSON(res, 200, request);
         }
 
         const oldStatus = request.status;
-        request.status = newStatus;
+        request.status = body.status;
         request.lastUpdated = new Date().toISOString();
+        request.statusHistory = request.statusHistory || [];
         request.statusHistory.push({
-            status: newStatus,
+            status: body.status,
             timestamp: new Date().toISOString(),
             noteCode: body.noteCode || null,
             declineReason: body.declineReason || null,
             noteText: body.noteText || null,
             note: body.note || null,
-            userId: userId || 'system'
+            userId: body.userId || 'system'
         });
 
+        await store.saveRequest(request);
+
         // Audit log
-        data.auditLog.push({
-            id: generateId('LOG'),
+        await store.addAudit({
             action: 'status_change',
             requestId: request.id,
             fromStatus: oldStatus,
-            toStatus: newStatus,
-            details: { note, userId },
+            toStatus: body.status,
+            details: { noteCode: body.noteCode, declineReason: body.declineReason, userId: body.userId },
             timestamp: new Date().toISOString()
         });
 
         // Notification
-        data.notifications.push({
-            id: generateId('NOTIF'),
+        await store.addNotification({
             customerId: request.customerId,
             requestId: request.id,
-            status: newStatus,
-            note: note || '',
+            status: body.status,
+            noteCode: body.noteCode || null,
             timestamp: new Date().toISOString(),
             read: false
         });
 
-        writeData(data);
         return sendJSON(res, 200, request);
     }
 
@@ -255,7 +188,7 @@ async function handleAPI(req, res, urlPath, method) {
     if (urlPath.match(/^\/api\/requests\/[^/]+$/) && method === 'PATCH') {
         const id = urlPath.split('/').pop();
         const body = await parseBody(req);
-        const request = data.requests.find(r => r.id === id);
+        const request = await store.getRequestById(id);
         if (!request) return sendJSON(res, 404, { error: 'Not found' });
 
         // Update allowed fields
@@ -265,33 +198,42 @@ async function handleAPI(req, res, urlPath, method) {
         if (body.visibleUntil !== undefined) request.visibleUntil = body.visibleUntil;
         request.lastUpdated = new Date().toISOString();
 
-        writeData(data);
+        await store.saveRequest(request);
         return sendJSON(res, 200, request);
     }
 
     // GET /api/audit - get audit log
     if (urlPath === '/api/audit' && method === 'GET') {
-        return sendJSON(res, 200, data.auditLog);
+        return sendJSON(res, 200, await store.getAudit());
     }
 
     // GET /api/notifications?customerId=
     if (urlPath === '/api/notifications' && method === 'GET') {
         const url = new URL(req.url, `http://${req.headers.host}`);
-        const customerId = url.searchParams.get('customerId');
-        let results = data.notifications;
-        if (customerId) results = results.filter(n => n.customerId === customerId);
-        return sendJSON(res, 200, results);
+        return sendJSON(res, 200, await store.getNotifications(url.searchParams.get('customerId')));
+    }
+
+    // POST /api/heartbeat - shop display pings that it's active
+    if (urlPath === '/api/heartbeat' && method === 'POST') {
+        const body = await parseBody(req);
+        if (body.akid) await store.recordHeartbeat(body.akid);
+        return sendJSON(res, 200, { ok: true });
+    }
+
+    // GET /api/heartbeats - list shop activity (for stats)
+    if (urlPath === '/api/heartbeats' && method === 'GET') {
+        return sendJSON(res, 200, await store.getHeartbeats());
     }
 
     // GET /api/stats - get statistics
     if (urlPath === '/api/stats' && method === 'GET') {
-        const requests = data.requests;
+        const requests = await store.getRequests({});
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
         const stats = {
             total: requests.length,
-            today: requests.filter(r => new Date(r.submittedAt) >= today).length,
+            today: 0,
             byStatus: {},
             byShop: {},
             bySport: {},
@@ -301,66 +243,49 @@ async function handleAPI(req, res, urlPath, method) {
             topMarkets: []
         };
 
-        requests.forEach(r => {
+        requests.forEach(function(r){
+            if (new Date(r.submittedAt) >= today) stats.today++;
             stats.byStatus[r.status] = (stats.byStatus[r.status] || 0) + 1;
             stats.byShop[r.akid] = (stats.byShop[r.akid] || 0) + 1;
             stats.bySport[r.category || 'Other'] = (stats.bySport[r.category || 'Other'] || 0) + 1;
         });
 
-        const resolved = requests.filter(r => ['approved', 'available', 'declined'].includes(r.status));
-        if (resolved.length > 0) {
-            const approved = resolved.filter(r => ['approved', 'available'].includes(r.status)).length;
-            const declined = resolved.filter(r => r.status === 'declined').length;
+        const resolved = requests.filter(function(r){ return ['approved', 'available', 'declined'].includes(r.status); });
+        if (resolved.length) {
+            const approved = resolved.filter(function(r){ return ['approved', 'available'].includes(r.status); }).length;
+            const declined = resolved.filter(function(r){ return r.status === 'declined'; }).length;
             stats.approvalRate = Math.round((approved / resolved.length) * 100);
             stats.declineRate = Math.round((declined / resolved.length) * 100);
         }
 
-        const reviewed = requests.filter(r => r.statusHistory && r.statusHistory.length > 1);
-        if (reviewed.length > 0) {
-            const totalTime = reviewed.reduce((sum, r) => {
-                const submitted = new Date(r.statusHistory[0].timestamp);
-                const firstReview = new Date(r.statusHistory[1].timestamp);
-                return sum + (firstReview - submitted);
-            }, 0);
-            stats.avgReviewTime = Math.round(totalTime / reviewed.length / 60000);
+        const reviewed = requests.filter(function(r){ return r.statusHistory && r.statusHistory.length > 1; });
+        if (reviewed.length) {
+            const total = reviewed.reduce(function(sum, r){ return sum + (new Date(r.statusHistory[1].timestamp) - new Date(r.statusHistory[0].timestamp)); }, 0);
+            stats.avgReviewTime = Math.round(total / reviewed.length / 60000);
         }
 
         const marketCounts = {};
-        requests.forEach(r => {
-            const name = r.marketName || r.customMarket || 'Unknown';
-            marketCounts[name] = (marketCounts[name] || 0) + 1;
-        });
-        stats.topMarkets = Object.entries(marketCounts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 10)
-            .map(([name, count]) => ({ name, count }));
+        requests.forEach(function(r){ var n = r.marketName || r.customMarket || 'Unknown'; marketCounts[n] = (marketCounts[n] || 0) + 1; });
+        stats.topMarkets = Object.entries(marketCounts).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 10).map(function(e){ return { name: e[0], count: e[1] }; });
 
         return sendJSON(res, 200, stats);
     }
 
-    // DELETE /api/data - clear all data
+    // DELETE /api/data - clear all data (admin only)
     if (urlPath === '/api/data' && method === 'DELETE') {
-        writeData({ requests: [], auditLog: [], notifications: [] });
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        await store.clearAll();
         return sendJSON(res, 200, { message: 'All data cleared' });
     }
 
     // POST /api/data/sample - generate sample data
     if (urlPath === '/api/data/sample' && method === 'POST') {
         const body = await parseBody(req);
-        // Sample data generation delegated to client - accepts array of requests
         if (body.requests && Array.isArray(body.requests)) {
-            body.requests.forEach(r => {
-                r.id = generateId('REQ');
-                r.submittedAt = r.submittedAt || new Date().toISOString();
-                r.status = r.status || 'submitted';
-                r.statusHistory = r.statusHistory || [{
-                    status: 'submitted',
-                    timestamp: r.submittedAt,
-                    note: 'Request submitted'
-                }];
-                data.requests.push(r);
-            });
-            writeData(data);
+            for (var si = 0; si < body.requests.length; si++) {
+                await store.addRequest(body.requests[si]);
+            }
         }
         return sendJSON(res, 201, { message: 'Sample data created', count: (body.requests || []).length });
     }

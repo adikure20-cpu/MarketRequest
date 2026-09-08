@@ -598,6 +598,27 @@ async function renderStatistics() {
             return { label: meta ? meta.accountName : akid, value: count };
         });
         renderBarChart('by-shop-chart', shopData);
+
+        fetch(API_BASE + '/heartbeats').then(function(r){return r.json();}).then(function(hbs){
+            var el = document.getElementById('active-shops-list');
+            if (!el) return;
+            if (!hbs.length) { el.innerHTML = '<p class="text-muted" style="font-size:0.85rem;">Keine Shop-Aktivität erfasst.</p>'; return; }
+            var now = Date.now();
+            var html = '<table style="width:100%;border-collapse:collapse;">';
+            html += '<tr style="text-align:left;color:var(--text-muted);font-size:0.75rem;"><th style="padding:6px;">Shop (AKID)</th><th style="padding:6px;">Status</th><th style="padding:6px;">Zuletzt gesehen</th><th style="padding:6px;">Aufrufe</th></tr>';
+            for (var i=0;i<hbs.length;i++){
+                var hb = hbs[i];
+                var lastSeen = new Date(hb.last_seen).getTime();
+                var minsAgo = Math.floor((now-lastSeen)/60000);
+                var active = minsAgo < 3;
+                var shopName = (typeof getShopByAkid==='function' && getShopByAkid(hb.akid)) ? getShopByAkid(hb.akid).accountName : hb.akid;
+                var statusBadge = active ? '<span style="color:#4caf50;font-weight:bold;">● Aktiv</span>' : '<span style="color:#999;">○ Inaktiv</span>';
+                var seenText = minsAgo < 1 ? 'gerade eben' : (minsAgo < 60 ? minsAgo+' Min. her' : Math.floor(minsAgo/60)+' Std. her');
+                html += '<tr style="border-top:1px solid var(--border);font-size:0.85rem;"><td style="padding:8px 6px;">'+escapeHtml(shopName)+' <span style="color:var(--text-muted);font-size:0.75rem;">('+escapeHtml(hb.akid)+')</span></td><td style="padding:8px 6px;">'+statusBadge+'</td><td style="padding:8px 6px;">'+seenText+'</td><td style="padding:8px 6px;">'+hb.hit_count+'</td></tr>';
+            }
+            html += '</table>';
+            el.innerHTML = html;
+        }).catch(function(){});
     } catch (e) {
         console.error('Failed to load stats:', e);
     }
