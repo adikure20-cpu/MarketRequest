@@ -15,15 +15,31 @@ const API_BASE = window.location.origin + '/api';
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Auth check
+    var authToken = localStorage.getItem('authToken');
+    if (!authToken) { window.location.href = 'login.html'; return; }
+    // Verify token and get user
+    fetch(API_BASE + '/auth/me', { headers: { 'Authorization': 'Bearer ' + authToken } })
+        .then(function(r){ if(!r.ok){ throw new Error('unauth'); } return r.json(); })
+        .then(function(user){
+            window.currentUser = user;
+            if (user.mustChangePassword) { window.location.href = 'login.html'; return; }
+            initDashboard(user);
+        })
+        .catch(function(){ localStorage.removeItem('authToken'); window.location.href = 'login.html'; });
+});
+
+function initDashboard(user) {
     const lang = I18n.init('dashLang', 'de');
     updateDashLangButtons(lang);
     applyDashTranslations();
-    loadBookieName();
+    loadBookieName(user);
     populateDeclineReasons();
     refreshQueue();
     startPolling();
     setupResponsive();
-});
+    loadUsers();
+}
 
 // --- Language ---
 function changeDashLang(lang) {
@@ -60,7 +76,10 @@ function applyDashTranslations() {
     document.title = I18n.t('dash_title');
 }
 
-function loadBookieName() {
+function loadBookieName(user) {
+    if (user && user.email) {
+        localStorage.setItem('bookieName', user.email);
+    }
     const name = localStorage.getItem('bookieName') || 'Bookie Admin';
     document.getElementById('bookie-name').value = name;
 }
@@ -86,6 +105,7 @@ function navigateTo(section) {
         case 'all-requests': renderAllRequests(); break;
         case 'statistics': renderStatistics(); break;
         case 'audit-log': renderAuditLog(); break;
+        case 'settings': loadUsers(); break;
     }
     document.getElementById('sidebar').classList.remove('open');
 }
@@ -783,6 +803,64 @@ async function savePlayerDetail() {
     } catch(e) {
         showToast('Fehler', 'error');
     }
+}
+
+// --- User Management ---
+function loadUsers() {
+    if (!window.currentUser || window.currentUser.role !== 'admin') {
+        var section = document.getElementById('user-mgmt-section');
+        if (section) section.style.display = 'none';
+        return;
+    }
+    var token = localStorage.getItem('authToken');
+    fetch(API_BASE + '/users', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(function(r){ return r.json(); })
+        .then(function(users){
+            var el = document.getElementById('user-list');
+            if (!el) return;
+            el.innerHTML = users.map(function(u){
+                return '<div class="user-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);"><span>' + escapeHtml(u.email) + ' <span class="badge badge-submitted">' + u.role + '</span></span>' + (u.email !== window.currentUser.email ? '<button class="btn btn-danger btn-sm" onclick="deleteUser(' + u.id + ')">Löschen</button>' : '<span style="color:var(--text-muted);font-size:0.8rem;">(Sie)</span>') + '</div>';
+            }).join('');
+        });
+}
+
+async function createUser() {
+    var token = localStorage.getItem('authToken');
+    var email = document.getElementById('new-user-email').value.trim();
+    var role = document.getElementById('new-user-role').value;
+    if (!email) { showToast('E-Mail erforderlich', 'warning'); return; }
+    var res = await fetch(API_BASE + '/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ email: email, role: role })
+    });
+    if (res.ok) {
+        showToast('Benutzer erstellt (Standardpasswort: B00Xware1!)', 'success');
+        document.getElementById('new-user-email').value = '';
+        loadUsers();
+    } else if (res.status === 409) {
+        showToast('Benutzer existiert bereits', 'error');
+    } else {
+        showToast('Fehler', 'error');
+    }
+}
+
+async function deleteUser(id) {
+    if (!confirm('Benutzer wirklich löschen?')) return;
+    var token = localStorage.getItem('authToken');
+    var res = await fetch(API_BASE + '/users/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) { showToast('Benutzer gelöscht', 'success'); loadUsers(); }
+    else { showToast('Fehler', 'error'); }
+}
+
+function logout() {
+    var token = localStorage.getItem('authToken');
+    fetch(API_BASE + '/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+    localStorage.removeItem('authToken');
+    window.location.href = 'login.html';
 }
 
 // --- Utilities ---

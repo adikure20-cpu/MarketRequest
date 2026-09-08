@@ -263,6 +263,26 @@
                                onchange="localStorage.setItem('bookieName', this.value)">
                     </div>
                 </div>
+                <div class="card mt-3" style="max-width: 600px;" id="user-mgmt-section">
+                    <h3 class="mb-2" style="color: var(--primary);">Benutzerverwaltung</h3>
+                    <p class="text-muted mb-2" style="font-size: 0.9rem;">Nur Admins können Benutzer verwalten. Neue Benutzer erhalten das Standardpasswort B00Xware1! und müssen es beim ersten Login ändern.</p>
+                    <div id="user-list" style="margin-bottom: 16px;"></div>
+                    <div class="form-group">
+                        <label>E-Mail des neuen Benutzers</label>
+                        <input type="email" class="form-control" id="new-user-email" placeholder="name@tipico.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Rolle</label>
+                        <select class="form-control" id="new-user-role">
+                            <option value="bookie">Bookie</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="createUser()">Benutzer erstellen</button>
+                </div>
+                <div class="card mt-3" style="max-width: 600px;">
+                    <button class="btn btn-secondary" onclick="logout()">Abmelden</button>
+                </div>
             </section>
         </main>
     </div>

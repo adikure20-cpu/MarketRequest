@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
 const Validation = require('./js/validation.js');
+const { initDb } = require('./js/db.js');
+const auth = require('./js/auth.js');
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
@@ -67,13 +69,24 @@ function sendJSON(res, statusCode, data) {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     });
     res.end(JSON.stringify(data));
 }
 
 function generateId(prefix) {
     return prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+}
+
+function getToken(req) {
+    // Check Authorization header first, then cookie
+    var authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.indexOf('Bearer ') === 0) {
+        return authHeader.substring(7);
+    }
+    var cookie = req.headers['cookie'] || '';
+    var match = cookie.match(/authToken=([^;]+)/);
+    return match ? match[1] : null;
 }
 
 // --- API Routes ---
@@ -83,7 +96,7 @@ async function handleAPI(req, res, urlPath, method) {
         res.writeHead(204, {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         });
         res.end();
         return;
@@ -349,6 +362,79 @@ async function handleAPI(req, res, urlPath, method) {
         return sendJSON(res, 201, { message: 'Sample data created', count: (body.requests || []).length });
     }
 
+    // POST /api/auth/login
+    if (urlPath === '/api/auth/login' && method === 'POST') {
+        const body = await parseBody(req);
+        try {
+            const result = await auth.login(body.email || '', body.password || '');
+            if (!result) return sendJSON(res, 401, { error: 'invalid_credentials' });
+            return sendJSON(res, 200, result);
+        } catch (e) {
+            return sendJSON(res, 500, { error: 'server_error' });
+        }
+    }
+
+    // POST /api/auth/logout
+    if (urlPath === '/api/auth/logout' && method === 'POST') {
+        const token = getToken(req);
+        await auth.logout(token);
+        return sendJSON(res, 200, { ok: true });
+    }
+
+    // GET /api/auth/me - current user
+    if (urlPath === '/api/auth/me' && method === 'GET') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user) return sendJSON(res, 401, { error: 'unauthorized' });
+        return sendJSON(res, 200, user);
+    }
+
+    // POST /api/auth/change-password
+    if (urlPath === '/api/auth/change-password' && method === 'POST') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user) return sendJSON(res, 401, { error: 'unauthorized' });
+        const body = await parseBody(req);
+        if (!body.newPassword || body.newPassword.length < 8) {
+            return sendJSON(res, 400, { error: 'weak_password' });
+        }
+        await auth.changePassword(user.id, body.newPassword);
+        return sendJSON(res, 200, { ok: true });
+    }
+
+    // GET /api/users - list users (admin only)
+    if (urlPath === '/api/users' && method === 'GET') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user || user.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const users = await auth.listUsers();
+        return sendJSON(res, 200, users);
+    }
+
+    // POST /api/users - create user (admin only)
+    if (urlPath === '/api/users' && method === 'POST') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user || user.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const body = await parseBody(req);
+        if (!body.email || !body.role) return sendJSON(res, 400, { error: 'missing_fields' });
+        if (body.role !== 'admin' && body.role !== 'bookie') return sendJSON(res, 400, { error: 'invalid_role' });
+        const result = await auth.createUser(body.email, body.role);
+        if (result.error === 'exists') return sendJSON(res, 409, { error: 'user_exists' });
+        return sendJSON(res, 201, result);
+    }
+
+    // DELETE /api/users/:id - delete user (admin only)
+    if (urlPath.match(/^\/api\/users\/[0-9]+$/) && method === 'DELETE') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user || user.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const uid = parseInt(urlPath.split('/').pop());
+        if (uid === user.id) return sendJSON(res, 400, { error: 'cannot_delete_self' });
+        await auth.deleteUser(uid);
+        return sendJSON(res, 200, { ok: true });
+    }
+
     return sendJSON(res, 404, { error: 'API endpoint not found' });
 }
 
@@ -415,6 +501,8 @@ const server = http.createServer(async (req, res) => {
         res.end(content);
     });
 });
+
+initDb();
 
 server.listen(PORT, HOST, () => {
     const base = `http://localhost:${PORT}`;

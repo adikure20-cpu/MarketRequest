@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmeldung – Marktanfragen</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/shared.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 36px 32px;
+        }
+        .login-brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .login-brand h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .login-brand p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+            padding: 13px;
+            font-size: 1rem;
+            margin-top: 6px;
+        }
+        .login-error {
+            background: var(--primary-light);
+            border: 1px solid var(--primary);
+            color: #ff6b6b;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+            display: none;
+        }
+        .login-error.show { display: block; }
+        .login-hint {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 18px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-brand">
+            <h1>Marktanfragen</h1>
+            <p id="brand-subtitle">Buchmacher-Anmeldung</p>
+        </div>
+
+        <div class="login-error" id="error-box"></div>
+
+        <!-- LOGIN VIEW -->
+        <form id="login-view" onsubmit="doLogin(event)">
+            <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input type="email" class="form-control" id="email" placeholder="name@tipico.com" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" class="form-control" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="login-btn">Anmelden</button>
+        </form>
+
+        <!-- CHANGE PASSWORD VIEW -->
+        <form id="change-view" class="hidden" onsubmit="doChangePassword(event)">
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 18px;">
+                Bitte legen Sie ein neues Passwort fest, um fortzufahren.
+            </p>
+            <div class="form-group">
+                <label for="new-password">Neues Passwort</label>
+                <input type="password" class="form-control" id="new-password" placeholder="Mindestens 8 Zeichen" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Passwort bestätigen</label>
+                <input type="password" class="form-control" id="confirm-password" placeholder="Passwort wiederholen" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="change-btn">Passwort ändern</button>
+        </form>
+
+        <p class="login-hint">Tipico Marktanfragen-System</p>
+    </div>
+
+    <script>
+        var API_BASE = window.location.origin + '/api';
+
+        function showError(msg) {
+            var box = document.getElementById('error-box');
+            box.textContent = msg;
+            box.classList.add('show');
+        }
+
+        function clearError() {
+            document.getElementById('error-box').classList.remove('show');
+        }
+
+        function showChangeView() {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('change-view').classList.remove('hidden');
+            document.getElementById('brand-subtitle').textContent = 'Passwort ändern';
+        }
+
+        async function doLogin(e) {
+            e.preventDefault();
+            clearError();
+            var btn = document.getElementById('login-btn');
+            btn.disabled = true;
+            var email = document.getElementById('email').value.trim();
+            var password = document.getElementById('password').value;
+
+            try {
+                var res = await fetch(API_BASE + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                if (!res.ok) {
+                    showError('E-Mail oder Passwort ist falsch.');
+                    btn.disabled = false;
+                    return;
+                }
+                var data = await res.json();
+                localStorage.setItem('authToken', data.token);
+                if (data.user && data.user.mustChangePassword) {
+                    showChangeView();
+                } else {
+                    window.location.href = 'bookie-dashboard.html';
+                }
+            } catch (err) {
+                showError('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+                btn.disabled = false;
+            }
+        }
+
+        async function doChangePassword(e) {
+            e.preventDefault();
+            clearError();
+            var btn = document.getElementById('change-btn');
+            var newPass = document.getElementById('new-password').value;
+            var confirm = document.getElementById('confirm-password').value;
+
+            if (newPass.length < 8) {
+                showError('Das Passwort muss mindestens 8 Zeichen lang sein.');
+                return;
+            }
+            if (newPass !== confirm) {
+                showError('Die Passwörter stimmen nicht überein.');
+                return;
+            }
+            btn.disabled = true;
+            var token = localStorage.getItem('authToken');
+            try {
+                var res = await fetch(API_BASE + '/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ newPassword: newPass })
+                });
+                if (!res.ok) {
+                    showError('Passwort konnte nicht geändert werden.');
+                    btn.disabled = false;
+                    return;
+                }
+                window.location.href = 'bookie-dashboard.html';
+            } catch (err) {
+                showError('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

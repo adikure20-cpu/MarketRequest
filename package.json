@@ -8,6 +8,8 @@
   },
   "private": true,
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "pg": "^8.23.0",
     "qrcode": "^1.5.4"
   }
 }
