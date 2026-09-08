@@ -117,17 +117,8 @@ async function refreshQueue() {
 }
 
 function updateQueueCount(requests) {
-    const pending = requests.filter(r => ['submitted', 'under_review'].includes(r.status));
+    const pending = requests.filter(r => r.status === 'submitted');
     document.getElementById('queue-count').textContent = pending.length;
-
-    const reviewing = requests.filter(r => r.status === 'under_review').length;
-    const reviewBadge = document.getElementById('review-notify-count');
-    if (reviewing > 0) {
-        reviewBadge.textContent = reviewing;
-        reviewBadge.classList.remove('hidden');
-    } else {
-        reviewBadge.classList.add('hidden');
-    }
 }
 
 function updateStatsOverview(requests) {
@@ -135,7 +126,6 @@ function updateStatsOverview(requests) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     const pending = requests.filter(r => r.status === 'submitted').length;
-    const reviewing = requests.filter(r => r.status === 'under_review').length;
     const approvedToday = requests.filter(r =>
         ['approved', 'available'].includes(r.status) &&
         r.lastUpdated && new Date(r.lastUpdated) >= today
@@ -146,7 +136,6 @@ function updateStatsOverview(requests) {
     ).length;
 
     document.getElementById('stat-pending').textContent = pending;
-    document.getElementById('stat-reviewing').textContent = reviewing;
     document.getElementById('stat-approved-today').textContent = approvedToday;
     document.getElementById('stat-declined-today').textContent = declinedToday;
 
@@ -225,8 +214,6 @@ function renderQueue(requests) {
 
     if (currentFilter === 'pending') {
         filtered = filtered.filter(r => r.status === 'submitted');
-    } else if (currentFilter === 'under_review') {
-        filtered = filtered.filter(r => r.status === 'under_review');
     } else if (currentFilter === 'all') {
         filtered = filtered.filter(r => !['declined', 'expired'].includes(r.status));
     } else if (currentFilter === 'high-priority') {
@@ -278,7 +265,6 @@ function renderQueue(requests) {
                 <td><span class="badge badge-${req.status}">${I18n.getStatusLabel(req.status)}</span></td>
                 <td>
                     <div class="request-actions" onclick="event.stopPropagation()">
-                        ${req.status === 'submitted' ? `<button class="btn btn-primary btn-sm" onclick="quickAction('${req.id}', 'under_review')">${I18n.t('dash_btn_review')}</button>` : ''}
                         ${['submitted', 'under_review'].includes(req.status) ? `
                             <button class="btn btn-success btn-sm" onclick="openApproveModal('${req.id}')">${I18n.t('dash_btn_approve')}</button>
                             <button class="btn btn-danger btn-sm" onclick="openDeclineModal('${req.id}')">${I18n.t('dash_btn_decline')}</button>
@@ -474,7 +460,6 @@ async function openDetail(requestId) {
         </div>
 
         <div class="detail-actions">
-            ${request.status === 'submitted' ? `<button class="btn btn-warning" onclick="quickAction('${request.id}', 'under_review')">🔍 ${I18n.t('dash_btn_review')}</button>` : ''}
             ${['submitted', 'under_review'].includes(request.status) ? `
                 <button class="btn btn-success" onclick="openApproveModal('${request.id}')">✓ ${I18n.t('dash_btn_approve')}</button>
                 <button class="btn btn-danger" onclick="openDeclineModal('${request.id}')">✗ ${I18n.t('dash_btn_decline')}</button>
@@ -676,7 +661,7 @@ async function exportAuditLog() {
 // --- Settings ---
 async function generateSampleData() {
     const activeShops = getAllActiveShops();
-    const statuses = ['submitted', 'under_review', 'available', 'declined'];
+    const statuses = ['submitted', 'available', 'declined'];
     const events = [
         'Liverpool vs Arsenal', 'Man City vs Chelsea', 'Real Madrid vs Barcelona',
         'Djokovic vs Alcaraz', 'Lakers vs Celtics', 'McGregor vs Chandler',

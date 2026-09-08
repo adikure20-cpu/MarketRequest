@@ -98,10 +98,6 @@
                         <div class="stat-value" id="stat-pending">0</div>
                         <div class="stat-label" data-i18n="dash_pending"></div>
                     </div>
-                    <div class="stat-card stat-warning">
-                        <div class="stat-value" id="stat-reviewing">0</div>
-                        <div class="stat-label" data-i18n="dash_reviewing"></div>
-                    </div>
                     <div class="stat-card stat-success">
                         <div class="stat-value" id="stat-approved-today">0</div>
                         <div class="stat-label" data-i18n="dash_approved_today"></div>
@@ -121,10 +117,6 @@
                         <h3 data-i18n="dash_incoming"></h3>
                         <div class="queue-filters">
                             <button class="filter-btn active" data-filter="pending" onclick="filterQueue('pending')" data-i18n="dash_filter_new"></button>
-                            <button class="filter-btn" data-filter="under_review" onclick="filterQueue('under_review')" style="position: relative;">
-                                <span data-i18n="dash_filter_reviewing"></span>
-                                <span class="review-badge hidden" id="review-notify-count">0</span>
-                            </button>
                             <button class="filter-btn" data-filter="all" onclick="filterQueue('all')" data-i18n="dash_filter_all"></button>
                             <button class="filter-btn" data-filter="high-priority" onclick="filterQueue('high-priority')">⚡ <span data-i18n="dash_filter_priority"></span></button>
                         </div>
