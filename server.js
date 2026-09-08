@@ -197,6 +197,9 @@ async function handleAPI(req, res, urlPath, method) {
 
     // PATCH /api/requests/:id/status - update status
     if (urlPath.match(/^\/api\/requests\/[^/]+\/status$/) && method === 'PATCH') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser) return sendJSON(res, 401, { error: 'unauthorized' });
+        if (authUser.role !== 'bookie') return sendJSON(res, 403, { error: 'admin_cannot_approve' });
         const id = urlPath.split('/')[3];
         const body = await parseBody(req);
         const { status: newStatus, note, userId } = body;

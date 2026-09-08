@@ -285,10 +285,12 @@ function renderQueue(requests) {
                 <td><span class="badge badge-${req.status}">${I18n.getStatusLabel(req.status)}</span></td>
                 <td>
                     <div class="request-actions" onclick="event.stopPropagation()">
-                        ${['submitted', 'under_review'].includes(req.status) ? `
-                            <button class="btn btn-success btn-sm" onclick="openApproveModal('${req.id}')">${I18n.t('dash_btn_approve')}</button>
-                            <button class="btn btn-danger btn-sm" onclick="openDeclineModal('${req.id}')">${I18n.t('dash_btn_decline')}</button>
-                        ` : ''}
+                        ${(window.currentUser && window.currentUser.role === 'bookie') ? `
+                            ${['submitted', 'under_review'].includes(req.status) ? `
+                                <button class="btn btn-success btn-sm" onclick="openApproveModal('${req.id}')">${I18n.t('dash_btn_approve')}</button>
+                                <button class="btn btn-danger btn-sm" onclick="openDeclineModal('${req.id}')">${I18n.t('dash_btn_decline')}</button>
+                            ` : ''}
+                        ` : '<span style="color:var(--text-muted);font-size:0.8rem;">—</span>'}
                     </div>
                 </td>
             </tr>
@@ -465,7 +467,7 @@ async function openDetail(requestId) {
             ${request.playerDetail ? `
                 <div class="detail-info-item">
                     <label>Details</label>
-                    <div class="value">👤 ${escapeHtml(request.playerDetail)} <button class="btn btn-secondary btn-sm" onclick="editPlayerDetail('${request.id}')" style="margin-left: 8px;">✏️</button></div>
+                    <div class="value">👤 ${escapeHtml(request.playerDetail)} ${(window.currentUser && window.currentUser.role === 'bookie') ? `<button class="btn btn-secondary btn-sm" onclick="editPlayerDetail('${request.id}')" style="margin-left: 8px;">✏️</button>` : ''}</div>
                 </div>
             ` : ''}
             ${request.visibleUntil ? `
@@ -476,6 +478,7 @@ async function openDetail(requestId) {
             ` : ''}
         </div>
 
+        ${(window.currentUser && window.currentUser.role === 'bookie') ? `
         <div class="detail-actions">
             ${['submitted', 'under_review'].includes(request.status) ? `
                 <button class="btn btn-success" onclick="openApproveModal('${request.id}')">✓ ${I18n.t('dash_btn_approve')}</button>
@@ -483,6 +486,7 @@ async function openDetail(requestId) {
             ` : ''}
             ${!['expired', 'available'].includes(request.status) ? `<button class="btn btn-secondary" onclick="quickAction('${request.id}', 'expired')">⏰ ${I18n.t('dash_btn_expire')}</button>` : ''}
         </div>
+        ` : '<div class="detail-actions"><span style="color:var(--text-muted);font-size:0.85rem;">Nur Bookies können Anfragen bearbeiten.</span></div>'}
 
         <div class="audit-section">
             <h4>${I18n.t('dash_detail_history')}</h4>
