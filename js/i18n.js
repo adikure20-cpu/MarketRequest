@@ -89,6 +89,8 @@ TRANSLATIONS.de = {
     cust_duplicate_approved: 'Diese Wette wurde bereits genehmigt!',
     cust_event_started: 'Dieses Event scheint bereits begonnen zu haben.',
     cust_success_toast: 'Anfrage erfolgreich eingereicht!',
+    cust_error_profanity: 'Unangemessene Sprache ist nicht erlaubt. Bitte formulieren Sie Ihre Anfrage sachlich.',
+    cust_error_length: 'Maximal 30 Zeichen erlaubt.',
 
     // Status messages
     status_submitted: 'Ihre Anfrage wurde empfangen.',
@@ -316,6 +318,8 @@ TRANSLATIONS.en = {
     cust_duplicate_approved: 'This bet has already been approved!',
     cust_event_started: 'This event appears to have already started.',
     cust_success_toast: 'Request submitted successfully!',
+    cust_error_profanity: 'Inappropriate language is not allowed. Please keep your request appropriate.',
+    cust_error_length: 'Maximum 30 characters allowed.',
 
     status_submitted: 'Your request has been received.',
     status_under_review: 'Stay tuned — bookies are reviewing your request.',
@@ -537,6 +541,8 @@ TRANSLATIONS.hr = {
     cust_duplicate_approved: 'Ova oklada je već odobrena!',
     cust_event_started: 'Čini se da je ovaj event već počeo.',
     cust_success_toast: 'Zahtjev uspješno poslan!',
+    cust_error_profanity: 'Neprimjeren jezik nije dozvoljen. Molimo formulirajte zahtjev pristojno.',
+    cust_error_length: 'Maksimalno 30 znakova dozvoljeno.',
 
     status_submitted: 'Vaš zahtjev je zaprimljen.',
     status_under_review: 'Ostanite s nama — kladioničari pregledavaju vaš zahtjev.',
@@ -758,6 +764,8 @@ TRANSLATIONS.tr = {
     cust_duplicate_approved: 'Bu bahis zaten onaylandı!',
     cust_event_started: 'Bu etkinlik zaten başlamış görünüyor.',
     cust_success_toast: 'Talep başarıyla gönderildi!',
+    cust_error_profanity: 'Uygunsuz dil kullanımına izin verilmez. Lütfen talebinizi uygun şekilde yazın.',
+    cust_error_length: 'En fazla 30 karakter izinlidir.',
 
     status_submitted: 'Talebiniz alındı.',
     status_under_review: 'Bizi takip edin — bahisçiler talebinizi inceliyor.',

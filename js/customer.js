@@ -274,6 +274,20 @@ async function submitRequest() {
         return;
     }
 
+    // Validate & sanitize inputs
+    var toCheck = [eventName, playerDetail, customMarket];
+    for (var vi = 0; vi < toCheck.length; vi++) {
+        if (toCheck[vi]) {
+            var vres = Validation.validateInput(toCheck[vi]);
+            if (!vres.valid) {
+                var msg = vres.reason === 'profanity' ? I18n.t('cust_error_profanity') : (vres.reason === 'length' ? I18n.t('cust_error_length') : I18n.t('cust_game_mandatory_hint'));
+                showToast(msg, 'error');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
+                return;
+            }
+        }
+    }
+
     const request = {
         akid: shopContext.akid,
         accountName: shopContext.accountName,
@@ -305,6 +319,11 @@ async function submitRequest() {
             var dupData = await res.json();
             var dupMsg = I18n.t('cust_duplicate_' + (dupData.status || 'submitted'));
             showToast(dupMsg, 'warning');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
+        } else if (res.status === 400) {
+            var errData = await res.json();
+            var m = errData.reason === 'profanity' ? I18n.t('cust_error_profanity') : I18n.t('cust_error_length');
+            showToast(m, 'error');
             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = I18n.t('cust_submit_btn'); }
         } else {
             showToast('Error', 'error');

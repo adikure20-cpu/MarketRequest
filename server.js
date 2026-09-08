@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
+const Validation = require('./js/validation.js');
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
@@ -116,6 +117,21 @@ async function handleAPI(req, res, urlPath, method) {
     // POST /api/requests - create a new request
     if (urlPath === '/api/requests' && method === 'POST') {
         const body = await parseBody(req);
+
+        // Validate & sanitize customer inputs
+        var fieldsToCheck = [body.eventName, body.playerDetail, body.customMarket];
+        for (var fi = 0; fi < fieldsToCheck.length; fi++) {
+            if (fieldsToCheck[fi]) {
+                var vr = Validation.validateInput(fieldsToCheck[fi]);
+                if (!vr.valid) {
+                    return sendJSON(res, 400, { error: 'invalid_input', reason: vr.reason });
+                }
+            }
+        }
+        // Sanitize
+        if (body.eventName) body.eventName = Validation.sanitize(body.eventName);
+        if (body.playerDetail) body.playerDetail = Validation.sanitize(body.playerDetail);
+        if (body.customMarket) body.customMarket = Validation.sanitize(body.customMarket);
 
         // Duplicate check - same shop + same market + same event
         const marketCheck = body.marketName || body.customMarket || '';
