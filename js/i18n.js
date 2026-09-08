@@ -208,6 +208,12 @@ TRANSLATIONS.de = {
     decline_duplicate: 'Duplikat einer bestehenden Anfrage',
     decline_other: 'Sonstiger Grund',
 
+    // Status notes
+    note_submitted: 'Anfrage vom Kunden eingereicht',
+    note_approved: 'Wette genehmigt und verfügbar',
+    note_declined: 'Anfrage abgelehnt',
+    note_expired: 'Anfrage abgelaufen',
+
     // Time
     time_just_now: 'gerade eben',
     time_min_ago: 'Min. her',
@@ -426,6 +432,12 @@ TRANSLATIONS.en = {
     decline_duplicate: 'Duplicate of existing request',
     decline_other: 'Other reason',
 
+    // Status notes
+    note_submitted: 'Request submitted by customer',
+    note_approved: 'Bet approved and available',
+    note_declined: 'Request declined',
+    note_expired: 'Request expired',
+
     time_just_now: 'just now',
     time_min_ago: 'min ago',
     time_hours_ago: 'hours ago',
@@ -641,6 +653,12 @@ TRANSLATIONS.hr = {
     decline_duplicate: 'Duplikat postojećeg zahtjeva',
     decline_other: 'Drugi razlog',
 
+    // Status notes
+    note_submitted: 'Zahtjev poslao kupac',
+    note_approved: 'Oklada odobrena i dostupna',
+    note_declined: 'Zahtjev odbijen',
+    note_expired: 'Zahtjev istekao',
+
     time_just_now: 'upravo sada',
     time_min_ago: 'min prije',
     time_hours_ago: 'sati prije',
@@ -855,6 +873,12 @@ TRANSLATIONS.tr = {
     decline_compliance: 'Uyumluluk kısıtlaması',
     decline_duplicate: 'Mevcut talebin kopyası',
     decline_other: 'Diğer sebep',
+
+    // Status notes
+    note_submitted: 'Talep müşteri tarafından gönderildi',
+    note_approved: 'Bahis onaylandı ve mevcut',
+    note_declined: 'Talep reddedildi',
+    note_expired: 'Talebin süresi doldu',
 
     time_just_now: 'az önce',
     time_min_ago: 'dk önce',

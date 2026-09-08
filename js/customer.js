@@ -363,7 +363,21 @@ async function renderMyRequests() {
                             ${I18n.getStatusLabel(entry.status)}
                         </div>
                         <div class="timeline-time">${formatDate(entry.timestamp)}</div>
-                        ${entry.note ? `<div class="timeline-note">${escapeHtml(entry.note)}</div>` : ''}
+                        ${(function(){
+                            var noteText = '';
+                            if (entry.noteCode) {
+                                noteText = I18n.t(entry.noteCode);
+                                if (entry.declineReason) {
+                                    noteText += ': ' + I18n.t('decline_' + entry.declineReason);
+                                }
+                                if (entry.noteText) {
+                                    noteText += ' - ' + entry.noteText;
+                                }
+                            } else if (entry.note) {
+                                noteText = entry.note;
+                            }
+                            return noteText ? '<div class="timeline-note">' + escapeHtml(noteText) + '</div>' : '';
+                        })()}
                     </div>
                 `;
             }).join('');

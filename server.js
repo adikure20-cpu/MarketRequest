@@ -146,7 +146,7 @@ async function handleAPI(req, res, urlPath, method) {
             statusHistory: [{
                 status: 'submitted',
                 timestamp: new Date().toISOString(),
-                note: 'Request submitted by customer'
+                noteCode: 'note_submitted'
             }]
         };
         data.requests.push(request);
@@ -186,7 +186,10 @@ async function handleAPI(req, res, urlPath, method) {
         request.statusHistory.push({
             status: newStatus,
             timestamp: new Date().toISOString(),
-            note: note || '',
+            noteCode: body.noteCode || null,
+            declineReason: body.declineReason || null,
+            noteText: body.noteText || null,
+            note: body.note || null,
             userId: userId || 'system'
         });
 

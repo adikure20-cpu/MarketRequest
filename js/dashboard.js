@@ -279,18 +279,18 @@ function renderQueue(requests) {
 // --- Quick Actions (API) ---
 async function quickAction(requestId, newStatus) {
     const bookieName = localStorage.getItem('bookieName') || 'Bookie Admin';
-    let note = '';
+    let noteCode = null;
 
     switch (newStatus) {
-        case 'under_review': note = I18n.t('dash_review_note'); break;
-        case 'available': note = I18n.t('dash_approve_note'); break;
+        case 'available': noteCode = 'note_approved'; break;
+        case 'expired': noteCode = 'note_expired'; break;
     }
 
     try {
         await fetch(`${API_BASE}/requests/${requestId}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus, note, userId: bookieName })
+            body: JSON.stringify({ status: newStatus, noteCode, userId: bookieName })
         });
         showToast(I18n.getStatusLabel(newStatus), 'success');
         refreshQueue();
@@ -316,17 +316,14 @@ async function confirmDecline() {
     if (!declineRequestId) return;
 
     const reason = document.getElementById('decline-reason').value;
-    const reasonLabel = I18n.t('decline_' + reason);
     const note = document.getElementById('decline-note').value.trim();
     const bookieName = localStorage.getItem('bookieName') || 'Bookie Admin';
-
-    const fullNote = `${I18n.t('dash_btn_decline')}: ${reasonLabel}${note ? ' - ' + note : ''}`;
 
     try {
         await fetch(`${API_BASE}/requests/${declineRequestId}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'declined', note: fullNote, userId: bookieName })
+            body: JSON.stringify({ status: 'declined', noteCode: 'note_declined', declineReason: reason, noteText: note, userId: bookieName })
         });
         showToast(I18n.getStatusLabel('declined'), 'warning');
         closeDeclineModal();
@@ -377,7 +374,7 @@ async function confirmApprove() {
         await fetch(API_BASE + '/requests/' + approveRequestId + '/status', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'available', note: I18n.t('dash_approve_note'), userId: bookieName })
+            body: JSON.stringify({ status: 'available', noteCode: 'note_approved', userId: bookieName })
         });
         showToast(I18n.getStatusLabel('available'), 'success');
         closeApproveModal();
@@ -473,7 +470,21 @@ async function openDetail(requestId) {
                 <div class="audit-item">
                     <div class="audit-action">
                         <span class="badge badge-${entry.status}" style="font-size: 0.65rem;">${I18n.getStatusLabel(entry.status)}</span>
-                        ${entry.note ? `<span style="margin-left: 8px; font-size: 0.8rem;">${escapeHtml(entry.note)}</span>` : ''}
+                        ${(function(){
+                            var noteText = '';
+                            if (entry.noteCode) {
+                                noteText = I18n.t(entry.noteCode);
+                                if (entry.declineReason) {
+                                    noteText += ': ' + I18n.t('decline_' + entry.declineReason);
+                                }
+                                if (entry.noteText) {
+                                    noteText += ' - ' + entry.noteText;
+                                }
+                            } else if (entry.note) {
+                                noteText = entry.note;
+                            }
+                            return noteText ? '<span style="margin-left: 8px; font-size: 0.8rem;">' + escapeHtml(noteText) + '</span>' : '';
+                        })()}
                     </div>
                     <div class="audit-time">${formatDate(entry.timestamp)}${entry.userId ? ' — ' + entry.userId : ''}</div>
                 </div>
