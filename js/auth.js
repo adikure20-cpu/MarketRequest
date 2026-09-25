@@ -22,7 +22,7 @@ async function login(email, password) {
 async function getUserByToken(token) {
     if (!token) return null;
     const result = await pool.query(
-        'SELECT u.* FROM users u JOIN sessions s ON s.user_id = u.id WHERE s.token = $1',
+        "SELECT u.* FROM users u JOIN sessions s ON s.user_id = u.id WHERE s.token = $1 AND s.created_at > NOW() - INTERVAL '12 hours'",
         [token]
     );
     if (result.rows.length === 0) return null;

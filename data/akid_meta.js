@@ -113,3 +113,7 @@ function getShopByAkid(akid) {
 function getAllActiveShops() {
     return Object.values(AKID_META).filter(s => s.active);
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { AKID_META: AKID_META, getShopByAkid: getShopByAkid, getAllActiveShops: getAllActiveShops };
+}

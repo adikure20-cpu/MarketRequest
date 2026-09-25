@@ -6,6 +6,8 @@ const Validation = require('./js/validation.js');
 const { initDb } = require('./js/db.js');
 const auth = require('./js/auth.js');
 const store = require('./js/store.js');
+const rateLimit = require('./js/ratelimit.js');
+const akidMeta = require('./data/akid_meta.js');
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
@@ -30,16 +32,23 @@ const MIME_TYPES = {
 function parseBody(req) {
     return new Promise((resolve, reject) => {
         let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-            try { resolve(JSON.parse(body || '{}')); }
-            catch (e) { reject(e); }
+        let size = 0;
+        const MAX_BODY = 10 * 1024;
+        req.on('data', chunk => {
+            size += chunk.length;
+            if (size > MAX_BODY) { reject(new Error('body_too_large')); req.destroy(); return; }
+            body += chunk;
         });
+        req.on('end', () => { try { resolve(JSON.parse(body || '{}')); } catch (e) { reject(e); } });
         req.on('error', reject);
     });
 }
 
 function sendJSON(res, statusCode, data) {
+    // CORS is intentionally left open (Access-Control-Allow-Origin: *).
+    // Auth uses Bearer tokens stored in localStorage (not cookies), so a
+    // cross-site page cannot read another origin's token and cannot forge
+    // authenticated requests. There are no ambient credentials to steal.
     res.writeHead(statusCode, {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -60,6 +69,12 @@ function getToken(req) {
     return match ? match[1] : null;
 }
 
+function getClientIp(req) {
+    var fwd = req.headers['x-forwarded-for'];
+    if (fwd) return fwd.split(',')[0].trim();
+    return req.socket.remoteAddress || 'unknown';
+}
+
 // --- API Routes ---
 async function handleAPI(req, res, urlPath, method) {
     // CORS preflight
@@ -73,6 +88,16 @@ async function handleAPI(req, res, urlPath, method) {
         return;
     }
 
+    // Rate limiting
+    const ip = getClientIp(req);
+    if (!rateLimit.checkLimit(ip, 'global', 120)) return sendJSON(res, 429, { error: 'rate_limit' });
+    if (urlPath === '/api/requests' && method === 'POST') {
+        if (!rateLimit.checkLimit(ip, 'create', 10)) return sendJSON(res, 429, { error: 'rate_limit' });
+    }
+    if (urlPath === '/api/auth/login' && method === 'POST') {
+        if (!rateLimit.checkLimit(ip, 'login', 8)) return sendJSON(res, 429, { error: 'rate_limit' });
+    }
+
     // GET /api/requests - get all requests (optional ?akid= filter)
     if (urlPath === '/api/requests' && method === 'GET') {
         const url = new URL(req.url, `http://${req.headers.host}`);
@@ -81,6 +106,10 @@ async function handleAPI(req, res, urlPath, method) {
             customerId: url.searchParams.get('customerId'),
             status: url.searchParams.get('status')
         };
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser && !filters.akid && !filters.customerId) {
+            return sendJSON(res, 403, { error: 'forbidden' });
+        }
         const results = await store.getRequests(filters);
         return sendJSON(res, 200, results);
     }
@@ -96,6 +125,11 @@ async function handleAPI(req, res, urlPath, method) {
     // POST /api/requests - create a new request
     if (urlPath === '/api/requests' && method === 'POST') {
         const body = await parseBody(req);
+
+        // Validate shop identifier
+        if (!body.akid || !akidMeta.getShopByAkid(body.akid)) {
+            return sendJSON(res, 400, { error: 'invalid_shop' });
+        }
 
         // Validate & sanitize customer inputs
         var fieldsToCheck = [body.eventName, body.playerDetail, body.customMarket];
@@ -204,6 +238,8 @@ async function handleAPI(req, res, urlPath, method) {
 
     // GET /api/audit - get audit log
     if (urlPath === '/api/audit' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser) return sendJSON(res, 401, { error: 'unauthorized' });
         return sendJSON(res, 200, await store.getAudit());
     }
 
@@ -216,17 +252,23 @@ async function handleAPI(req, res, urlPath, method) {
     // POST /api/heartbeat - shop display pings that it's active
     if (urlPath === '/api/heartbeat' && method === 'POST') {
         const body = await parseBody(req);
-        if (body.akid) await store.recordHeartbeat(body.akid);
+        if (body.akid && akidMeta.getShopByAkid(body.akid)) {
+            await store.recordHeartbeat(body.akid);
+        }
         return sendJSON(res, 200, { ok: true });
     }
 
     // GET /api/heartbeats - list shop activity (for stats)
     if (urlPath === '/api/heartbeats' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser) return sendJSON(res, 401, { error: 'unauthorized' });
         return sendJSON(res, 200, await store.getHeartbeats());
     }
 
     // GET /api/stats - get statistics
     if (urlPath === '/api/stats' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser) return sendJSON(res, 401, { error: 'unauthorized' });
         const requests = await store.getRequests({});
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -391,6 +433,11 @@ const server = http.createServer(async (req, res) => {
             res.end('Missing data parameter');
             return;
         }
+        if (qrData.length > 512) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Data too long');
+            return;
+        }
         try {
             const buffer = await QRCode.toBuffer(qrData, {
                 width: 220,
@@ -410,7 +457,15 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Static files
+    var relPath = urlPath.replace(/^\//, '');
+    var blocked = ['js/db.js', 'js/auth.js', 'js/store.js', 'js/ratelimit.js', 'server.js', 'package.json', 'package-lock.json'];
+    if (blocked.indexOf(relPath) !== -1) {
+        res.writeHead(403, { 'Content-Type': 'text/plain' }); res.end('Forbidden'); return;
+    }
     let filePath = path.join(__dirname, decodeURIComponent(urlPath === '/' ? 'qr-display.html' : urlPath));
+    if (filePath.indexOf(__dirname) !== 0) {
+        res.writeHead(403); res.end('Forbidden'); return;
+    }
     const ext = path.extname(filePath);
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 

@@ -71,6 +71,12 @@ async function initDb() {
             );
             console.log('Seeded admin user:', adminEmail);
         }
+        // Purge expired sessions (older than 12 hours)
+        try {
+            await pool.query("DELETE FROM sessions WHERE created_at < NOW() - INTERVAL '12 hours'");
+        } catch (e) {
+            console.error('Session cleanup error:', e.message);
+        }
         console.log('Database initialized');
     } catch (e) {
         console.error('DB init error:', e.message);

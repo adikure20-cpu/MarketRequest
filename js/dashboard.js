@@ -13,6 +13,9 @@ let allRequests = [];
 
 const API_BASE = window.location.origin + '/api';
 
+function authHeaders() { return { 'Authorization': 'Bearer ' + (localStorage.getItem('authToken') || '') }; }
+function authHeadersJson() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('authToken') || '') }; }
+
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     // Auth check
@@ -126,7 +129,7 @@ function setupResponsive() {
 // --- Queue Management (API) ---
 async function refreshQueue() {
     try {
-        allRequests = await fetch(`${API_BASE}/requests`).then(r => r.json());
+        allRequests = await fetch(`${API_BASE}/requests`, { headers: authHeaders() }).then(r => r.json());
         updateQueueCount(allRequests);
         updateStatsOverview(allRequests);
         renderQueue(allRequests);
@@ -311,7 +314,7 @@ async function quickAction(requestId, newStatus) {
     try {
         await fetch(`${API_BASE}/requests/${requestId}/status`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ status: newStatus, noteCode, userId: bookieName })
         });
         showToast(I18n.getStatusLabel(newStatus), 'success');
@@ -344,7 +347,7 @@ async function confirmDecline() {
     try {
         await fetch(`${API_BASE}/requests/${declineRequestId}/status`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ status: 'declined', noteCode: 'note_declined', declineReason: reason, noteText: note, userId: bookieName })
         });
         showToast(I18n.getStatusLabel('declined'), 'warning');
@@ -389,13 +392,13 @@ async function confirmApprove() {
         // First set the visibleUntil field
         await fetch(API_BASE + '/requests/' + approveRequestId, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ visibleUntil: visibleUntil })
         });
         // Then approve (set to available)
         await fetch(API_BASE + '/requests/' + approveRequestId + '/status', {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ status: 'available', noteCode: 'note_approved', userId: bookieName })
         });
         showToast(I18n.getStatusLabel('available'), 'success');
@@ -527,7 +530,7 @@ function closeDetailPanel() {
 // --- All Requests ---
 async function renderAllRequests(searchQuery) {
     try {
-        let requests = await fetch(`${API_BASE}/requests`).then(r => r.json());
+        let requests = await fetch(`${API_BASE}/requests`, { headers: authHeaders() }).then(r => r.json());
 
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
@@ -581,7 +584,7 @@ function searchAllRequests(query) {
 // --- Statistics (API) ---
 async function renderStatistics() {
     try {
-        const stats = await fetch(`${API_BASE}/stats`).then(r => r.json());
+        const stats = await fetch(`${API_BASE}/stats`, { headers: authHeaders() }).then(r => r.json());
 
         document.getElementById('total-requests').textContent = stats.total;
         document.getElementById('approval-rate').textContent = stats.approvalRate + '%';
@@ -599,7 +602,7 @@ async function renderStatistics() {
         });
         renderBarChart('by-shop-chart', shopData);
 
-        fetch(API_BASE + '/heartbeats').then(function(r){return r.json();}).then(function(hbs){
+        fetch(API_BASE + '/heartbeats', { headers: authHeaders() }).then(function(r){return r.json();}).then(function(hbs){
             var el = document.getElementById('active-shops-list');
             if (!el) return;
             if (!hbs.length) { el.innerHTML = '<p class="text-muted" style="font-size:0.85rem;">Keine Shop-Aktivität erfasst.</p>'; return; }
@@ -649,7 +652,7 @@ function renderBarChart(containerId, data) {
 // --- Audit Log (API) ---
 async function renderAuditLog() {
     try {
-        const log = await fetch(`${API_BASE}/audit`).then(r => r.json());
+        const log = await fetch(`${API_BASE}/audit`, { headers: authHeaders() }).then(r => r.json());
         const container = document.getElementById('audit-log-list');
         const emptyEl = document.getElementById('audit-empty');
 
@@ -695,7 +698,7 @@ function formatAuditAction(action) {
 
 async function exportAuditLog() {
     try {
-        const log = await fetch(`${API_BASE}/audit`).then(r => r.json());
+        const log = await fetch(`${API_BASE}/audit`, { headers: authHeaders() }).then(r => r.json());
         const csv = [
             'Timestamp,Action,Request ID,From Status,To Status,User',
             ...log.map(e => `${e.timestamp},${e.action},${e.requestId},${e.fromStatus || ''},${e.toStatus || ''},${(e.details && e.details.userId) || ''}`)
@@ -750,7 +753,7 @@ async function generateSampleData() {
     try {
         await fetch(`${API_BASE}/data/sample`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ requests })
         });
         showToast(I18n.t('dash_generated_toast'), 'success');
@@ -763,7 +766,7 @@ async function generateSampleData() {
 async function confirmClearData() {
     if (confirm(I18n.t('dash_settings_clear_confirm'))) {
         try {
-            await fetch(`${API_BASE}/data`, { method: 'DELETE' });
+            await fetch(`${API_BASE}/data`, { method: 'DELETE', headers: authHeaders() });
             showToast(I18n.t('dash_cleared_toast'), 'warning');
             refreshQueue();
         } catch (e) {
@@ -818,7 +821,7 @@ async function savePlayerDetail() {
     try {
         await fetch(API_BASE + '/requests/' + editPlayerRequestId, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeadersJson(),
             body: JSON.stringify({ playerDetail: newVal })
         });
         showToast('Spieler aktualisiert', 'success');
