@@ -394,6 +394,16 @@ async function handleAPI(req, res, urlPath, method) {
         return sendJSON(res, 201, result);
     }
 
+    // POST /api/users/:id/reset-password - reset a user's password to default (admin only)
+    if (urlPath.match(/^\/api\/users\/[0-9]+\/reset-password$/) && method === 'POST') {
+        const token = getToken(req);
+        const user = await auth.getUserByToken(token);
+        if (!user || user.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const uid = parseInt(urlPath.split('/')[3]);
+        await auth.resetUserPassword(uid);
+        return sendJSON(res, 200, { ok: true });
+    }
+
     // DELETE /api/users/:id - delete user (admin only)
     if (urlPath.match(/^\/api\/users\/[0-9]+$/) && method === 'DELETE') {
         const token = getToken(req);

@@ -62,4 +62,11 @@ async function deleteUser(userId) {
     await pool.query('DELETE FROM users WHERE id = $1', [userId]);
 }
 
-module.exports = { login, getUserByToken, logout, changePassword, createUser, listUsers, deleteUser };
+async function resetUserPassword(userId) {
+    const hash = bcrypt.hashSync('B00Xware1!', 10);
+    await pool.query('UPDATE users SET password_hash = $1, must_change_password = true WHERE id = $2', [hash, userId]);
+    // Invalidate existing sessions for that user so they must log in again
+    await pool.query('DELETE FROM sessions WHERE user_id = $1', [userId]);
+}
+
+module.exports = { login, getUserByToken, logout, changePassword, createUser, listUsers, deleteUser, resetUserPassword };

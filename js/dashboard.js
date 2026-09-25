@@ -847,7 +847,14 @@ function loadUsers() {
             var el = document.getElementById('user-list');
             if (!el) return;
             el.innerHTML = users.map(function(u){
-                return '<div class="user-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);"><span>' + escapeHtml(u.email) + ' <span class="badge badge-submitted">' + u.role + '</span></span>' + (u.email !== window.currentUser.email ? '<button class="btn btn-danger btn-sm" onclick="deleteUser(' + u.id + ')">Löschen</button>' : '<span style="color:var(--text-muted);font-size:0.8rem;">(Sie)</span>') + '</div>';
+                var actions = '';
+                actions += '<button class="btn btn-secondary btn-sm" onclick="resetUserPassword(' + u.id + ')" style="margin-right:6px;">Passwort zurücksetzen</button>';
+                if (u.email !== window.currentUser.email) {
+                    actions += '<button class="btn btn-danger btn-sm" onclick="deleteUser(' + u.id + ')">Löschen</button>';
+                } else {
+                    actions += '<span style="color:var(--text-muted);font-size:0.8rem;">(Sie)</span>';
+                }
+                return '<div class="user-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);"><span>' + escapeHtml(u.email) + ' <span class="badge badge-submitted">' + u.role + '</span></span><span>' + actions + '</span></div>';
             }).join('');
         });
 }
@@ -882,6 +889,17 @@ async function deleteUser(id) {
     });
     if (res.ok) { showToast('Benutzer gelöscht', 'success'); loadUsers(); }
     else { showToast('Fehler', 'error'); }
+}
+
+async function resetUserPassword(id) {
+    if (!confirm('Passwort auf Standard (B00Xware1!) zurücksetzen? Der Benutzer muss es beim nächsten Login ändern.')) return;
+    var token = localStorage.getItem('authToken');
+    var res = await fetch(API_BASE + '/users/' + id + '/reset-password', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) { showToast('Passwort zurückgesetzt (B00Xware1!)', 'success'); }
+    else { showToast('Fehler beim Zurücksetzen', 'error'); }
 }
 
 function logout() {
