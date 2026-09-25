@@ -4,7 +4,8 @@
   "description": "Shop QR Code Betting Market Request System",
   "scripts": {
     "start": "node server.js",
-    "show": "node server.js"
+    "show": "node server.js",
+    "reset-admin": "node scripts/reset-admin.js"
   },
   "private": true,
   "dependencies": {

@@ -71,6 +71,24 @@ async function initDb() {
             );
             console.log('Seeded admin user:', adminEmail);
         }
+        // Admin password reset via env var (set ADMIN_RESET_PASSWORD in Render, deploy, then remove it)
+        if (process.env.ADMIN_RESET_PASSWORD) {
+            try {
+                const resetHash = bcrypt.hashSync(process.env.ADMIN_RESET_PASSWORD, 10);
+                await pool.query(
+                    'UPDATE users SET password_hash = $1, must_change_password = true WHERE email = $2',
+                    [resetHash, adminEmail]
+                );
+                // Also ensure the admin exists with correct role
+                await pool.query(
+                    "UPDATE users SET role = 'admin' WHERE email = $1",
+                    [adminEmail]
+                );
+                console.log('ADMIN PASSWORD RESET applied for', adminEmail);
+            } catch (e) {
+                console.error('Admin reset error:', e.message);
+            }
+        }
         // Purge expired sessions (older than 12 hours)
         try {
             await pool.query("DELETE FROM sessions WHERE created_at < NOW() - INTERVAL '12 hours'");
