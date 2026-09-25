@@ -106,6 +106,32 @@ async function getHeartbeats() {
     return result.rows;
 }
 
+// --- Shop activations ---
+async function activateShop(akid, accountname, parent, activatedBy) {
+    await pool.query(
+        'INSERT INTO shop_activations (akid, accountname, parent_accountname, activated, activated_by, activated_at) VALUES ($1,$2,$3,true,$4,NOW()) ' +
+        'ON CONFLICT (akid) DO UPDATE SET activated = true, accountname = $2, parent_accountname = $3, activated_by = $4, activated_at = NOW()',
+        [akid, accountname || null, parent || null, activatedBy || null]
+    );
+}
+async function deactivateShop(akid) {
+    await pool.query('UPDATE shop_activations SET activated = false WHERE akid = $1', [akid]);
+}
+async function isShopActivated(akid) {
+    var result = await pool.query('SELECT activated FROM shop_activations WHERE akid = $1', [akid]);
+    return result.rows.length > 0 && result.rows[0].activated === true;
+}
+async function getActivatedShops() {
+    var result = await pool.query('SELECT akid, accountname, parent_accountname, activated, activated_by, activated_at FROM shop_activations WHERE activated = true ORDER BY accountname');
+    return result.rows;
+}
+async function getActivationMap() {
+    var result = await pool.query('SELECT akid, activated FROM shop_activations');
+    var map = {};
+    result.rows.forEach(function(r){ map[r.akid] = r.activated; });
+    return map;
+}
+
 // --- Clear (admin) ---
 async function clearAll() {
     await pool.query('DELETE FROM requests');
@@ -116,5 +142,6 @@ async function clearAll() {
 module.exports = {
     getRequests, getRequestById, addRequest, saveRequest, findDuplicate,
     addAudit, getAudit, addNotification, getNotifications,
-    recordHeartbeat, getHeartbeats, clearAll, genId
+    recordHeartbeat, getHeartbeats, clearAll, genId,
+    activateShop, deactivateShop, isShopActivated, getActivatedShops, getActivationMap
 };

@@ -42,6 +42,7 @@ function initDashboard(user) {
     startPolling();
     setupResponsive();
     loadUsers();
+    loadPartners();
 }
 
 // --- Language ---
@@ -108,7 +109,7 @@ function navigateTo(section) {
         case 'all-requests': renderAllRequests(); break;
         case 'statistics': renderStatistics(); break;
         case 'audit-log': renderAuditLog(); break;
-        case 'settings': loadUsers(); break;
+        case 'settings': loadUsers(); loadPartners(); break;
     }
     document.getElementById('sidebar').classList.remove('open');
 }
@@ -907,6 +908,77 @@ function logout() {
     fetch(API_BASE + '/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
     localStorage.removeItem('authToken');
     window.location.href = 'login.html';
+}
+
+// --- Shop Activation ---
+var shopSearchTimer = null;
+function debouncedShopSearch() {
+    clearTimeout(shopSearchTimer);
+    shopSearchTimer = setTimeout(loadShopsForPartner, 400);
+}
+function loadPartners() {
+    if (!window.currentUser || window.currentUser.role !== 'admin') {
+        var sec = document.getElementById('shop-activation-section');
+        if (sec) sec.style.display = 'none';
+        return;
+    }
+    fetch(API_BASE + '/shops/partners', { headers: authHeaders() })
+        .then(function(r){ return r.json(); })
+        .then(function(partners){
+            var sel = document.getElementById('partner-select');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- Partner wählen --</option>' + partners.map(function(p){
+                return '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>';
+            }).join('');
+        }).catch(function(){});
+}
+function loadShopsForPartner() {
+    var partner = document.getElementById('partner-select').value;
+    var search = document.getElementById('shop-search').value.trim();
+    if (!partner && !search) {
+        document.getElementById('shop-activation-list').innerHTML = '<p class="text-muted" style="font-size:0.85rem;">Partner wählen oder suchen.</p>';
+        return;
+    }
+    var qs = [];
+    if (partner) qs.push('partner=' + encodeURIComponent(partner));
+    if (search) qs.push('search=' + encodeURIComponent(search));
+    fetch(API_BASE + '/shops?' + qs.join('&'), { headers: authHeaders() })
+        .then(function(r){ return r.json(); })
+        .then(function(shops){
+            var el = document.getElementById('shop-activation-list');
+            if (!shops.length) { el.innerHTML = '<p class="text-muted" style="font-size:0.85rem;">Keine Shops gefunden.</p>'; return; }
+            el.innerHTML = shops.map(function(s){
+                var checked = s.activated ? 'checked' : '';
+                var addr = s.address || s.accountname || '';
+                return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">' +
+                    '<input type="checkbox" ' + checked + ' onchange="toggleShop(this, \'' + escapeHtml(s.akid) + '\', \'' + escapeHtml((s.accountname||'').replace(/'/g,"")) + '\', \'' + escapeHtml((s.parent_accountname||'').replace(/'/g,"")) + '\')">' +
+                    '<div style="flex:1;"><strong>' + escapeHtml(s.accountname || s.akid) + '</strong> <span class="badge badge-submitted">' + escapeHtml(s.type||'') + '</span><br>' +
+                    '<span style="font-size:0.8rem;color:var(--text-muted);">AKID: ' + escapeHtml(s.akid) + (addr ? ' — ' + escapeHtml(addr) : '') + '</span></div>' +
+                    (s.activated ? '<span style="color:#4caf50;font-size:0.8rem;">● Aktiv</span>' : '<span style="color:#999;font-size:0.8rem;">○ Inaktiv</span>') +
+                    '</div>';
+            }).join('');
+        }).catch(function(){});
+}
+async function toggleShop(checkbox, akid, accountname, parent) {
+    var activate = checkbox.checked;
+    var url = API_BASE + '/shops/' + (activate ? 'activate' : 'deactivate');
+    try {
+        var res = await fetch(url, {
+            method: 'POST',
+            headers: authHeadersJson(),
+            body: JSON.stringify({ akid: akid, accountname: accountname, parent_accountname: parent })
+        });
+        if (res.ok) {
+            showToast(activate ? 'Shop aktiviert' : 'Shop deaktiviert', 'success');
+            loadShopsForPartner();
+        } else {
+            showToast('Fehler', 'error');
+            checkbox.checked = !activate;
+        }
+    } catch(e) {
+        showToast('Fehler', 'error');
+        checkbox.checked = !activate;
+    }
 }
 
 // --- Utilities ---

@@ -59,6 +59,16 @@ async function initDb() {
                 hit_count INTEGER DEFAULT 1
             )
         `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS shop_activations (
+                akid VARCHAR(64) PRIMARY KEY,
+                accountname VARCHAR(255),
+                parent_accountname VARCHAR(255),
+                activated BOOLEAN NOT NULL DEFAULT true,
+                activated_by VARCHAR(255),
+                activated_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
         // Seed admin user if not exists
         const bcrypt = require('bcryptjs');
         const adminEmail = 'adi.kuric@tipico.com';

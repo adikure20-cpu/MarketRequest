@@ -6,6 +6,7 @@ const Validation = require('./js/validation.js');
 const { initDb } = require('./js/db.js');
 const auth = require('./js/auth.js');
 const store = require('./js/store.js');
+const shopsdb = require('./js/shopsdb.js');
 const rateLimit = require('./js/ratelimit.js');
 const akidMeta = require('./data/akid_meta.js');
 
@@ -372,6 +373,55 @@ async function handleAPI(req, res, urlPath, method) {
         return sendJSON(res, 200, { ok: true });
     }
 
+    // GET /api/shops/partners?search= (admin only)
+    if (urlPath === '/api/shops/partners' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        try { return sendJSON(res, 200, await shopsdb.getPartners(url.searchParams.get('search'))); }
+        catch (e) { return sendJSON(res, 500, { error: 'shops_db_error' }); }
+    }
+    // GET /api/shops?partner=&search= (admin only) - includes activation status
+    if (urlPath === '/api/shops' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        try {
+            const shops = await shopsdb.getShops(url.searchParams.get('partner'), url.searchParams.get('search'));
+            const activationMap = await store.getActivationMap();
+            shops.forEach(function(s){ s.activated = activationMap[s.akid] === true; });
+            return sendJSON(res, 200, shops);
+        } catch (e) { return sendJSON(res, 500, { error: 'shops_db_error' }); }
+    }
+    // POST /api/shops/activate (admin only)
+    if (urlPath === '/api/shops/activate' && method === 'POST') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const body = await parseBody(req);
+        if (!body.akid) return sendJSON(res, 400, { error: 'missing_akid' });
+        await store.activateShop(body.akid, body.accountname, body.parent_accountname, authUser.email);
+        return sendJSON(res, 200, { ok: true });
+    }
+    // POST /api/shops/deactivate (admin only)
+    if (urlPath === '/api/shops/deactivate' && method === 'POST') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const body = await parseBody(req);
+        if (!body.akid) return sendJSON(res, 400, { error: 'missing_akid' });
+        await store.deactivateShop(body.akid);
+        return sendJSON(res, 200, { ok: true });
+    }
+    // GET /api/shops/check?akid= (PUBLIC) - is shop activated for display?
+    if (urlPath === '/api/shops/check' && method === 'GET') {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const akid = url.searchParams.get('akid');
+        if (!akid) return sendJSON(res, 400, { error: 'missing_akid' });
+        const activated = await store.isShopActivated(akid);
+        var shopInfo = null;
+        if (activated) { try { shopInfo = await shopsdb.getShopByAkid(akid); } catch(e){} }
+        return sendJSON(res, 200, { activated: activated, shop: shopInfo });
+    }
+
     // GET /api/users - list users (admin only)
     if (urlPath === '/api/users' && method === 'GET') {
         const token = getToken(req);
@@ -468,7 +518,7 @@ const server = http.createServer(async (req, res) => {
 
     // Static files
     var relPath = urlPath.replace(/^\//, '');
-    var blocked = ['js/db.js', 'js/auth.js', 'js/store.js', 'js/ratelimit.js', 'server.js', 'package.json', 'package-lock.json'];
+    var blocked = ['js/db.js', 'js/auth.js', 'js/store.js', 'js/shopsdb.js', 'js/ratelimit.js', 'server.js', 'package.json', 'package-lock.json'];
     if (blocked.indexOf(relPath) !== -1) {
         res.writeHead(403, { 'Content-Type': 'text/plain' }); res.end('Forbidden'); return;
     }

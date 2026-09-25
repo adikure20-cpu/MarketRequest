@@ -284,6 +284,21 @@
                     </div>
                     <button class="btn btn-primary" onclick="createUser()">Benutzer erstellen</button>
                 </div>
+                <div class="card mt-3" style="max-width: 800px;" id="shop-activation-section">
+                    <h3 class="mb-2" style="color: var(--primary);">Shop-Aktivierung für Display</h3>
+                    <p class="text-muted mb-2" style="font-size: 0.9rem;">Nur aktivierte Shops können die Display-Seite nutzen. Wähle einen Partner oder suche per AKID, Name oder Adresse.</p>
+                    <div class="form-group">
+                        <label>Partner (FP)</label>
+                        <select class="form-control" id="partner-select" onchange="loadShopsForPartner()">
+                            <option value="">-- Partner wählen --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Suche (AKID, Name oder Adresse)</label>
+                        <input type="text" class="form-control" id="shop-search" placeholder="Suchen..." oninput="debouncedShopSearch()">
+                    </div>
+                    <div id="shop-activation-list" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
                 <div class="card mt-3" style="max-width: 600px;">
                     <button class="btn btn-secondary" onclick="logout()">Abmelden</button>
                 </div>
