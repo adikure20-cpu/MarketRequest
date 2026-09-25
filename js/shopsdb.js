@@ -37,4 +37,10 @@ async function getShopByAkid(akid) {
     return result.rows.length ? result.rows[0] : null;
 }
 
+if (!shopsPool) {
+    console.warn('SHOPS_DATABASE_URL not set - shop activation features disabled');
+} else {
+    shopsPool.query('SELECT 1').then(function(){ console.log('Shops DB connected'); }).catch(function(e){ console.error('Shops DB connection error:', e.message); });
+}
+
 module.exports = { getPartners, getShops, getShopByAkid, shopsPool };

@@ -373,6 +373,25 @@ async function handleAPI(req, res, urlPath, method) {
         return sendJSON(res, 200, { ok: true });
     }
 
+    // GET /api/shops/diag - diagnostic (admin only)
+    if (urlPath === '/api/shops/diag' && method === 'GET') {
+        const authUser = await auth.getUserByToken(getToken(req));
+        if (!authUser || authUser.role !== 'admin') return sendJSON(res, 403, { error: 'forbidden' });
+        const diag = { hasEnvVar: !!process.env.SHOPS_DATABASE_URL, poolExists: !!shopsdb.shopsPool, partnerCount: null, shopCount: null, sampleRow: null, error: null };
+        try {
+            if (shopsdb.shopsPool) {
+                const cnt = await shopsdb.shopsPool.query('SELECT COUNT(*) AS c FROM akid_meta');
+                diag.shopCount = cnt.rows[0].c;
+                const pc = await shopsdb.shopsPool.query("SELECT COUNT(DISTINCT parent_accountname) AS c FROM akid_meta");
+                diag.partnerCount = pc.rows[0].c;
+                const sample = await shopsdb.shopsPool.query('SELECT akid, accountname, parent_accountname, type FROM akid_meta LIMIT 1');
+                diag.sampleRow = sample.rows[0] || null;
+            }
+        } catch (e) {
+            diag.error = e.message;
+        }
+        return sendJSON(res, 200, diag);
+    }
     // GET /api/shops/partners?search= (admin only)
     if (urlPath === '/api/shops/partners' && method === 'GET') {
         const authUser = await auth.getUserByToken(getToken(req));
